@@ -85,7 +85,7 @@ function run (opts = {}) {
     const books = this.getBooks();
     const book = books[uuid];
     console.log('book: ' + JSON.stringify(book, null, 2));
-    const epubPath = path.join(book.path, book.title + ' - ' + book.author + '.epub');
+    const epubPath = path.join(book.path, book.name + '.epub');
     console.log('epubPath: ', epubPath);
     res.sendFile(epubPath, {
       headers: {
@@ -105,7 +105,19 @@ function getBooks () {
   const self = this;
   const books = {};
   self.dbs.forEach(db => {
-    db.dbh.prepare('select uuid, title, author_sort as author, path from books').all()
+    db.dbh.prepare(`select
+        books.id,
+        uuid,
+        title,
+        author_sort as author,
+        path,
+        name
+      from books
+      join data on
+        data.book = books.id
+      where
+        data.format = 'EPUB'
+    `).all()
     .forEach(record => {
       record.path = path.join(db.path, record.path);
       books[record.uuid] = record;

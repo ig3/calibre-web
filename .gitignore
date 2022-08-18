@@ -1,0 +1,10 @@
+*~
+*.swp
+*.swo
+xtq.js
+.npmrc
+node_modules
+npm-debug.log
+~*
+config
+coverage/

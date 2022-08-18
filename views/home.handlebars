@@ -1,0 +1,15 @@
+<h2>From home</h2>
+
+
+<div id="books">
+{{#bookList}}
+  <div id="{{uuid}}" class="book">
+    <a href="/book/{{uuid}}" target="_blank">
+    <img class="cover" src="/cover/{{uuid}}/cover.jpg">
+    <div class="title">{{title}}</div>
+    <div class="author">{{author}}</div>
+    </a>
+  </div>
+{{/bookList}}
+</div>
+

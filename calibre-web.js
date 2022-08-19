@@ -12,7 +12,10 @@ module.exports = (options = {}) => {
   const instance = Object.create(api);
   instance.opts = Object.assign({}, {
     port: 9000,
-    databases: [ '/mnt/calibre/Calibre Library' ]
+    databases: [
+      '/mnt/calibre/Calibre Library',
+      '/usr/local/data/calibrexxx'
+    ]
   }, options);
 
   return instance;
@@ -25,6 +28,7 @@ function run (opts = {}) {
 
   self.dbs = [];
   self.opts.databases.forEach(dbPath => {
+    console.log('open: ' + dbPath);
     self.dbs.push({
       path: dbPath,
       dbh: require('better-sqlite3')(
@@ -75,8 +79,12 @@ function run (opts = {}) {
   });
 
   app.get('/book/:uuid', (req, res) => {
+    const uuid = req.params.uuid;
+    const books = this.getBooks();
+    const book = books[uuid];
     res.render('book', {
-      uuid: req.params.uuid
+      title: book.title,
+      uuid: uuid
     });
   });
 

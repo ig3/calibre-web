@@ -1,7 +1,7 @@
 body {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   margin: 0;
-  background: #fff;
+  background: #335;
   color: #333;
   position: absolute;
   height: 100%;
@@ -31,12 +31,12 @@ body {
   padding: 0;
   position: relative;
   margin: 10px auto;
-  background: white url('ajax-loader.gif') center center no-repeat;
+  background: #eee url('/img/loader.gif') center center no-repeat;
   top: calc(50vh - 300px);
 }
 
 #viewer.spreads .epub-view > iframe {
-  background: white;
+  background: #eee;
 }
 
 #viewer.scrolled {
@@ -44,18 +44,18 @@ body {
   width: 800px;
   margin: 0 auto;
   position: relative;
-  background: url('ajax-loader.gif') center center no-repeat;
+  background: #eee url('/img/loader.gif') center center no-repeat;
 }
 
 #viewer.scrolled .epub-container {
-  background: white;
+  background: #eee;
   box-shadow: 0 0 4px #ccc;
   margin: 10px;
   padding: 20px;
 }
 
 #viewer.scrolled .epub-view > iframe {
-  background: white;
+  background: #eee;
 }
 
 #prev {

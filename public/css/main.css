@@ -12,15 +12,35 @@ body {
 #title {
   width: 900px;
   min-height: 18px;
-  margin: 10px auto;
+  margin: 5px auto 2px;
   text-align: center;
   font-size: 16px;
   color: #e2e2e2;
   font-weight: 400;
 }
 
-#title.hover {
-  color: #777;
+#title:hover {
+  color: #ccc;
+}
+
+#toc {
+  float: left;
+  background: #999;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+option {
+  background: #444 !important;
+}
+
+option:checked {
+  background: #444 !important;
+}
+
+option:not(:checked) {
+  background: #444 !important;
 }
 
 #viewer.spreads {
@@ -30,9 +50,11 @@ body {
   border-radius: 5px;
   padding: 0;
   position: relative;
-  margin: 10px auto;
+  margin-left: auto;
+  margin-right: auto;
   background: #eee url('/img/loader.gif') center center no-repeat;
-  top: calc(50vh - 300px);
+/*  top: calc(50vh - 300px); */
+  z-index: 2;
 }
 
 #viewer.spreads .epub-view > iframe {

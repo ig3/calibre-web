@@ -8,6 +8,10 @@ body {
   width: 100%;
 }
 
+#content {
+  height: 100%;
+}
+
 #title {
   width: 900px;
   min-height: 18px;
@@ -42,9 +46,13 @@ option:not(:checked) {
   background: #444 !important;
 }
 
+#viewer {
+  height: 100%;
+}
+
 #viewer.spreads {
   width: 80%;
-  height: 80%;
+  height: 90%;
   box-shadow: 0 0 4px #ccc;
   border-radius: 5px;
   padding: 0;

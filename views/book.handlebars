@@ -12,7 +12,7 @@
   let rendition = book.renderTo("viewer", {
     method: 'default',
     width: '100%',
-    height: '600px'
+    height: '100%'
   });
   let displayed = rendition.display();
 
@@ -73,7 +73,6 @@
   });
 
   rendition.on('relocated', function(location) {
-    console.log(location);
 
     const next = book.package.metadata.direction === 'rtl' ?
       document.getElementById('prev') : document.getElementById('next');

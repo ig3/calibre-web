@@ -9,7 +9,11 @@
 
 <script>
   let book = ePub("/book/{{uuid}}/book.epub");
-  let rendition = book.renderTo("viewer", {width: '100%', height: '600px'});
+  let rendition = book.renderTo("viewer", {
+    method: 'default',
+    width: '100%',
+    height: '600px'
+  });
   let displayed = rendition.display();
 
   book.ready.then(() => {

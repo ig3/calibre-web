@@ -16,6 +16,11 @@
   });
   let displayed = rendition.display();
 
+  const cfi = location.hash.substr(1);
+  if (cfi) {
+    rendition.display(cfi);
+  }
+
   book.ready.then(() => {
     const next = document.getElementById('next');
     next.addEventListener('click', e => {
@@ -47,10 +52,16 @@
 
     rendition.on('keyup', keyListener);
     document.addEventListener('keyup', keyListener, false);
-
   });
 
   const title = document.getElementById('title');
+
+  rendition.on('relocated', (location) => {
+    const newLocation = 
+      window.location.href.replace(window.location.hash,'') +
+      '#' + location.start.cfi;
+    window.history.replaceState(null, '', newLocation);
+  });
 
   rendition.on('rendered', function(section) {
     const current = book.navigation && book.navigation.get(section.href);
@@ -104,7 +115,6 @@
   });
 
   window.addEventListener('unload', function () {
-    console.log('unloading');
     this.book.destroy();
   });
 

@@ -29,15 +29,21 @@ function run (opts = {}) {
   self.dbs = [];
   self.opts.databases.forEach(dbPath => {
     console.log('open: ' + dbPath);
-    self.dbs.push({
-      path: dbPath,
-      dbh: require('better-sqlite3')(
+    try {
+      const dbh = require('better-sqlite3')(
         path.join(dbPath, 'metadata.db'),
         {
           fileMustExist: true
         }
-      )
-    });
+      );
+      self.dbs.push({
+        path: dbPath,
+        dbh: dbh
+      });
+    } catch (e) {
+      console.error(e.message);
+      console.error(dbPath + ' failed to open - ignored');
+    }
   });
   console.log('OK');
 
@@ -69,11 +75,9 @@ function run (opts = {}) {
   });
 
   app.get('/cover/:uuid/cover.jpg', (req, res) => {
-    console.log('get cover');
     const uuid = req.params.uuid;
     const books = this.getBooks();
     const book = books[uuid];
-    console.log('book: ' + JSON.stringify(book, null, 2));
     const coverPath = path.join(book.path, 'cover.jpg');
     res.sendFile(coverPath);
   });

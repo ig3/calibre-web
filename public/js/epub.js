@@ -311,6 +311,7 @@ function insert(item, array, compareFunction) {
  */
 
 function locationOf(item, array, compareFunction, _start, _end) {
+  console.log('function locationOf: ', item, array, compareFunction, _start, _end);
   var start = _start || 0;
   var end = _end || array.length;
   var pivot = parseInt(start + (end - start) / 2);
@@ -2032,7 +2033,6 @@ class EpubCFI {
         range.setStart(missed.container, missed.offset);
       }
     } else {
-      console.log("No startContainer found for", this.toString()); // No start found
 
       return null;
     }
@@ -15840,17 +15840,23 @@ class navigation_Navigation {
 
 
   get(target) {
+    console.log('epubjs navigation.get: ', target);
     var index;
 
     if (!target) {
       return this.toc;
     }
 
+    console.log('tocByHref: ', this.tocByHref);
     if (target.indexOf("#") === 0) {
+      console.log('tocById: ', this.tocById);
       index = this.tocById[target.substring(1)];
     } else if (target in this.tocByHref) {
+      console.log('tocByHref: ', this.tocByHref);
       index = this.tocByHref[target];
     }
+
+    console.log('epubjs navigation.get index: ', index);
 
     return this.getByIndex(target, index, this.toc);
   }

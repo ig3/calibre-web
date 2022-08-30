@@ -16,7 +16,7 @@
   });
   let displayed = rendition.display();
 
-  const cfi = location.hash.substr(1);
+  const cfi = decodeURIComponent(location.hash.substr(1));
   if (cfi) {
     rendition.display(cfi);
   }
@@ -56,34 +56,19 @@
 
   const title = document.getElementById('title');
 
-  rendition.on('relocated', (location) => {
+  rendition.on('rendered', function(section) {
+    console.log('rendered');
+    updateToc(section.href);
+  });
+
+  rendition.on('relocated', function(location) {
+    console.log('relocated');
+    updateToc(location.start.href);
+
     const newLocation = 
       window.location.href.replace(window.location.hash,'') +
       '#' + location.start.cfi;
     window.history.replaceState(null, '', newLocation);
-  });
-
-  rendition.on('rendered', function(section) {
-    const current = book.navigation && book.navigation.get(section.href);
-
-    if (current) {
-      const $select = document.getElementById('toc');
-      const $selected = $select.querySelector('option[selected]');
-      if ($selected) {
-        $selected.removeAttribute('selected');
-      }
-
-      const $options = $select.querySelectorAll('options');
-      for (let i = 0; i < $options.length; ++i) {
-        let $selected = $options[i].getAttribute('ref') === current.href;
-        if (selected) {
-          $options[i].setAttribute('selected', '');
-        }
-      }
-    }
-  });
-
-  rendition.on('relocated', function(location) {
 
     const next = book.package.metadata.direction === 'rtl' ?
       document.getElementById('prev') : document.getElementById('next');
@@ -105,6 +90,7 @@
   });
 
   rendition.on('layout', layout => {
+    console.log('layout');
     const viewer = document.getElementById('viewer');
 
     if (layout.spread) {
@@ -138,5 +124,16 @@
       return false;
     };
   });
+
+  function updateToc (href) {
+    const $select = document.getElementById('toc');
+    const $options = $select.querySelectorAll('option');
+    $select.selectedIndex = -1;
+    for (let i = 0; i < $options.length; ++i) {
+      if ($options[i].getAttribute('ref').startsWith(href)) {
+        $options[i].selected = true;
+      }
+    }
+  }
 </script>
 

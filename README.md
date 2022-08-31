@@ -1,7 +1,7 @@
 # calibre-web.js
 
-A simple web server that serves epub books from a local
-[Calibre-web](https://github.com/janeczku/calibre-web) database.
+A simple web server that serves epub books from local
+[Calibre](https://github.com/kovidgoyal/calibre) databases.
 
 ## Installation & operation
 

@@ -50,8 +50,8 @@
       }
     };
 
-    rendition.on('keyup', keyListener);
-    document.addEventListener('keyup', keyListener, false);
+    rendition.on('keydown', keyListener);
+    document.addEventListener('keydown', keyListener, false);
   });
 
   const title = document.getElementById('title');

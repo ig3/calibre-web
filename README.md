@@ -1,5 +1,40 @@
 # calibre-web.js
 
+A simple web server that serves epub books from a local
+[Calibre-web](https://github.com/janeczku/calibre-web) database.
+
+## Installation & operation
+
+Thus far, I just run it from the command line, but it would be easy to
+install it globally and run it from systemd. I'll do that some day. For
+now:
+
+```
+$ npm install
+$ node calibre-web.js
+```
+
+It lostens on port 9000. Browse to http://localhost:9000.
+
+I can access multiple Calibre databases. I have one local to my laptop with
+what I want to have available when I'm offline or away from home and
+another on my home server, accessed by NFS.
+
+Most of the activity / load is in the browser, so the server doesn't have
+to be efficient. But it runs all the time. Most of all, when it's not
+processing a request I want it to be idle - not using system resources.
+Node is fairly good at that. The server uses negligible resources compared
+to the browser, though a few seconds of load when reloading the home page
+with the list of books. I would change it if I had thousands of books, but
+for a few hundred books, the simplicity is more important than performance
+optimization. It works well enough.
+
+Once the book is loaded, it works as well as Calibre-Web because they are
+both running epub.js in the browser to display the book.
+
+There is no provision for uploading books, editing them or their meta-data
+or anything else. I do all that in Calibre. Calibre works well.
+
 ## Motivation
 
 I wrote this because I wanted something I could install easily on my laptop
@@ -39,34 +74,7 @@ programming these days, so I don't have to deal with Python's significant
 whitespace, opinionated tools and related nonsense. I don't have to deal
 with any more PEP talks.
 
-## Installation & operation
+## Changes
 
-Thus far, I just run it from the command line, but it would be easy to
-install it globally and run it from systemd. I'll do that some day. For
-now:
-
-```
-$ npm install
-$ node calibre-web.js
-```
-
-It lostens on port 9000. Browse to http://localhost:9000.
-
-I can access multiple Calibre databases. I have one local to my laptop with
-what I want to have available when I'm offline or away from home and
-another on my home server, accessed by NFS.
-
-Most of the activity / load is in the browser, so the server doesn't have
-to be efficient. But it runs all the time. Most of all, when it's not
-processing a request I want it to be idle - not using system resources.
-Node is fairly good at that. The server uses negligible resources compared
-to the browser, though a few seconds of load when reloading the home page
-with the list of books. I would change it if I had thousands of books, but
-for a few hundred books, the simplicity is more important than performance
-optimization. It works well enough.
-
-Once the book is loaded, it works as well as Calibre-Web because they are
-both running epub.js in the browser to display the book.
-
-There is no provision for uploading books, editing them or their meta-data
-or anything else. I do all that in Calibre. Calibre works well.
+It's early days yet. Not published and too unsettled for changes to be
+noteworthy. See the git log and code for details.

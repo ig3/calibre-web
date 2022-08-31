@@ -121,6 +121,7 @@
       const index = $select.selectedIndex,
         url = $select.options[index].getAttribute('ref');
       rendition.display(url);
+      document.body.focus();
       return false;
     };
   });

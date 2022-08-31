@@ -60,7 +60,9 @@ function run (opts = {}) {
     console.log('get /');
     const books = this.getBooks();
     const bookList = Object.keys(books)
-    .sort((a, b) => books[a].title.localeCompare(books[b].title))
+//    .sort((a, b) => books[a].title.localeCompare(books[b].title))
+//    .sort((a, b) => books[b].id - books[a].id)
+    .sort((a, b) => books[a].timestamp.localeCompare(books[b].timestamp))
     .map(key => {
       const book = JSON.parse(JSON.stringify(books[key]));
       if (book.title.length > 10)
@@ -123,7 +125,8 @@ function getBooks () {
         title,
         author_sort as author,
         path,
-        name
+        name,
+        timestamp
       from books
       join data on
         data.book = books.id

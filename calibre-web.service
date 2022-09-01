@@ -1,0 +1,15 @@
+[Unit]
+Description=Calibre web server
+
+[Service]
+Type=simple
+Restart=on-failure
+WorkingDirectory=/tmp
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=calibre-web-js
+ExecStart=bash -l -c calibre-web
+
+[Install]
+WantedBy=default.target
+

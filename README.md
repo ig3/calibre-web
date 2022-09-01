@@ -3,22 +3,58 @@
 A simple web server that serves epub books from local
 [Calibre](https://github.com/kovidgoyal/calibre) databases.
 
-## Installation & operation
-
-Thus far, I just run it from the command line, but it would be easy to
-install it globally and run it from systemd. I'll do that some day. For
-now:
-
+## Installation
 ```
-$ npm install
-$ node calibre-web.js
+$ npm install -g @ig3/calibre-web
 ```
 
-It lostens on port 9000. Browse to http://localhost:9000.
+## Operation
+The package provides an executable: `calibre-web`
 
-I can access multiple Calibre databases. I have one local to my laptop with
+Run this to start the server:
+
+```
+$ calibre-web
+```
+
+It listens on port 9000.
+
+Browse to http://localhost:9000.
+
+It can be started by systemd. For example:
+
+```
+[Unit]
+Description=Calibre Web server
+
+[Service]
+Type=simple
+Restart=on-failure
+WorkingDirectory=/tmp
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=calibre-web
+ExecStart=calibre-web
+
+[Install]
+WantedBy=default.target
+```
+
+This can be installed as a system service or a per-user service. See the
+systemd documentation for details of setting up a service.
+
+
+## Configuration
+
+There should be a configuration file, but there isn't one yet. 
+
+It can access multiple Calibre databases. I have one local to my laptop with
 what I want to have available when I'm offline or away from home and
 another on my home server, accessed by NFS.
+
+At the moment, the paths to the Calibre libraries are hard coded in the
+executable script. Edit the list there. Eventually I will add a config file
+for these paths.
 
 Most of the activity / load is in the browser, so the server doesn't have
 to be efficient. But it runs all the time. Most of all, when it's not

@@ -13,8 +13,7 @@ module.exports = (options = {}) => {
   instance.opts = Object.assign({}, {
     port: 9000,
     databases: [
-      '/mnt/calibre/Calibre Library',
-      '/usr/local/data/calibrexxx'
+      // paths to Calibre databases
     ]
   }, options);
 

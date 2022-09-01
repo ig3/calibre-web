@@ -46,30 +46,49 @@ systemd documentation for details of setting up a service.
 
 ## Configuration
 
-There should be a configuration file, but there isn't one yet. 
+Configuration may be stored in:
 
-It can access multiple Calibre databases. I have one local to my laptop with
-what I want to have available when I'm offline or away from home and
-another on my home server, accessed by NFS.
+ * /etc/calibre-web.json
+ * ~/.calibre-web.json
 
-At the moment, the paths to the Calibre libraries are hard coded in the
-executable script. Edit the list there. Eventually I will add a config file
-for these paths.
+There are only two parameters:
 
-Most of the activity / load is in the browser, so the server doesn't have
-to be efficient. But it runs all the time. Most of all, when it's not
-processing a request I want it to be idle - not using system resources.
-Node is fairly good at that. The server uses negligible resources compared
-to the browser, though a few seconds of load when reloading the home page
-with the list of books. I would change it if I had thousands of books, but
-for a few hundred books, the simplicity is more important than performance
-optimization. It works well enough.
+ * port: the port the server should listen on
+ * databases: an array of paths to Calibre databases to be read
 
-Once the book is loaded, it works as well as Calibre-Web because they are
-both running epub.js in the browser to display the book.
+The database paths are the paths of the directories containing the
+`metadata.db` files.
 
-There is no provision for uploading books, editing them or their meta-data
-or anything else. I do all that in Calibre. Calibre works well.
+For example:
+
+```
+{
+  "port": 1234,
+  "databases": [
+    "/usr/local/calibre",
+    "/usr/share/calibre1",
+    "/usr/share/calibre2"
+  ]
+}
+```
+
+## Features
+
+This only serves epub files. Other content of the Calibre database will be
+ignored.
+
+The home page shows the cover image, title and author of each book, sorted
+by timestamp which, I think, is the time the book was added to Calibre.
+
+It can read multiple Calibre databases but they must be local: the Calibre
+database is read from a file path. 
+
+Server load is fairly light. Just a node process running an Express
+website. When not processing a request it should not consume CPU. 
+
+It uses epub.js in the browser to display the book. Once the book is
+downloaded, there is no more load on the server as it is browsed.
+
 
 ## Motivation
 

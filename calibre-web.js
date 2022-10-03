@@ -27,22 +27,10 @@ function run (opts = {}) {
 
   self.dbs = [];
   self.opts.databases.forEach(dbPath => {
-    console.log('open: ' + dbPath);
-    try {
-      const dbh = require('better-sqlite3')(
-        path.join(dbPath, 'metadata.db'),
-        {
-          fileMustExist: true
-        }
-      );
-      self.dbs.push({
-        path: dbPath,
-        dbh: dbh
-      });
-    } catch (e) {
-      console.error(e.message);
-      console.error(dbPath + ' failed to open - ignored');
-    }
+    self.dbs.push({
+      path: dbPath,
+      dbh: openDatabase(dbPath)
+    });
   });
   console.log('OK');
 
@@ -79,6 +67,11 @@ function run (opts = {}) {
     const uuid = req.params.uuid;
     const books = this.getBooks();
     const book = books[uuid];
+    if (!book) {
+      return res.render('404', {
+        uuid: uuid
+      });
+    }
     const coverPath = path.join(book.path, 'cover.jpg');
     res.sendFile(coverPath);
   });
@@ -87,6 +80,11 @@ function run (opts = {}) {
     const uuid = req.params.uuid;
     const books = this.getBooks();
     const book = books[uuid];
+    if (!book) {
+      return res.render('404', {
+        uuid: uuid
+      });
+    }
     res.render('book', {
       title: book.title,
       uuid: uuid
@@ -97,6 +95,11 @@ function run (opts = {}) {
     const uuid = req.params.uuid;
     const books = this.getBooks();
     const book = books[uuid];
+    if (!book) {
+      return res.render('404', {
+        uuid: uuid
+      });
+    }
     console.log('book: ' + JSON.stringify(book, null, 2));
     const epubPath = path.join(book.path, book.name + '.epub');
     console.log('epubPath: ', epubPath);
@@ -114,28 +117,53 @@ function run (opts = {}) {
   });
 }
 
+function openDatabase (dbPath) {
+  console.log('open: ' + dbPath);
+  try {
+    const dbh = require('better-sqlite3')(
+      path.join(dbPath, 'metadata.db'),
+      {
+        fileMustExist: true
+      }
+    );
+    return dbh;
+  } catch (e) {
+    console.error(e.message);
+    console.error(dbPath + ' failed to open - ignored');
+    return;
+  }
+}
+
 function getBooks () {
   const self = this;
   const books = {};
   self.dbs.forEach(db => {
-    db.dbh.prepare(`select
-        books.id,
-        uuid,
-        title,
-        author_sort as author,
-        path,
-        name,
-        timestamp
-      from books
-      join data on
-        data.book = books.id
-      where
-        data.format = 'EPUB'
-    `).all()
-    .forEach(record => {
-      record.path = path.join(db.path, record.path);
-      books[record.uuid] = record;
-    });
+    if (!db.dbh) db.dbh = openDatabase(db.path);
+    if (db.dbh) {
+      try {
+        db.dbh.prepare(`select
+            books.id,
+            uuid,
+            title,
+            author_sort as author,
+            path,
+            name,
+            timestamp
+          from books
+          join data on
+            data.book = books.id
+          where
+            data.format = 'EPUB'
+        `).all()
+        .forEach(record => {
+          record.path = path.join(db.path, record.path);
+          books[record.uuid] = record;
+        });
+      } catch (err) {
+        console.error('read ' + db.path + ': ', err);
+        db.dbh = undefined;
+      }
+    }
   });
   return books;
 }

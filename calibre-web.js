@@ -44,7 +44,6 @@ function run (opts = {}) {
   app.use(express.static(path.join(__dirname, 'public')));
 
   app.get('/', (req, res) => {
-    console.log('get /');
     const books = this.getBooks();
     const bookList = Object.keys(books)
 //    .sort((a, b) => books[a].title.localeCompare(books[b].title))
@@ -138,8 +137,12 @@ function getBooks () {
   const self = this;
   const books = {};
   self.dbs.forEach(db => {
-    if (!db.dbh) db.dbh = openDatabase(db.path);
+    if (!db.dbh) {
+      console.log('open: ' + db.path);
+      db.dbh = openDatabase(db.path);
+    }
     if (db.dbh) {
+      console.log('read: ' + db.path);
       try {
         db.dbh.prepare(`select
             books.id,
@@ -163,6 +166,8 @@ function getBooks () {
         console.error('read ' + db.path + ': ', err);
         db.dbh = undefined;
       }
+    } else {
+      console.log(db.path + ': unavailable');
     }
   });
   return books;

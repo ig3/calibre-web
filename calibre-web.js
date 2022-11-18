@@ -41,7 +41,14 @@ function run (opts = {}) {
   app.engine('handlebars', expressHandlebars.engine());
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'handlebars');
-  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(
+    express.static(
+      path.join(__dirname, 'public'),
+      {
+        maxAge: "1d"
+      }
+    )
+  );
 
   app.get('/', (req, res) => {
     const books = this.getBooks();
@@ -74,7 +81,9 @@ function run (opts = {}) {
       });
     }
     const coverPath = path.join(book.path, 'cover.jpg');
-    res.sendFile(coverPath);
+    res.sendFile(coverPath, {
+      maxAge: '1d'
+    });
   });
 
   app.get('/book/:uuid', (req, res) => {

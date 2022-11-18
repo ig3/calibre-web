@@ -58,6 +58,7 @@ function run (opts = {}) {
       return book;
     });
     res.render('home', {
+      title: 'Calibre Web',
       bookList: bookList
     });
   });
@@ -68,6 +69,7 @@ function run (opts = {}) {
     const book = books[uuid];
     if (!book) {
       return res.render('404', {
+        title: 'Calibre Web',
         uuid: uuid
       });
     }
@@ -81,6 +83,7 @@ function run (opts = {}) {
     const book = books[uuid];
     if (!book) {
       return res.render('404', {
+        title: 'Calibre Web',
         uuid: uuid
       });
     }
@@ -96,6 +99,7 @@ function run (opts = {}) {
     const book = books[uuid];
     if (!book) {
       return res.render('404', {
+        title: 'Calibre Web',
         uuid: uuid
       });
     }

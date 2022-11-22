@@ -51,13 +51,14 @@ function run (opts = {}) {
   );
 
   app.get('/', (req, res) => {
-    const books = this.getBooks();
-    const bookList = Object.keys(books)
+    this.books = this.getBooks();
+    const bookList = Object.keys(this.books)
 //    .sort((a, b) => books[a].title.localeCompare(books[b].title))
 //    .sort((a, b) => books[b].id - books[a].id)
-    .sort((a, b) => books[a].timestamp.localeCompare(books[b].timestamp))
+    .sort((a, b) => this.books[a].timestamp.localeCompare(
+      this.books[b].timestamp))
     .map(key => {
-      const book = JSON.parse(JSON.stringify(books[key]));
+      const book = JSON.parse(JSON.stringify(this.books[key]));
       if (book.title.length > 10)
         book.title = book.title.slice(0,10) + '...'
       if (book.author.length > 10)
@@ -72,8 +73,10 @@ function run (opts = {}) {
 
   app.get('/cover/:uuid/cover.jpg', (req, res) => {
     const uuid = req.params.uuid;
-    const books = this.getBooks();
-    const book = books[uuid];
+    if (!this.books || !this.books[uuid]) {
+      this.books = this.getBooks();
+    }
+    const book = this.books[uuid];
     if (!book) {
       return res.render('404', {
         title: 'Calibre Web',
@@ -88,8 +91,10 @@ function run (opts = {}) {
 
   app.get('/book/:uuid', (req, res) => {
     const uuid = req.params.uuid;
-    const books = this.getBooks();
-    const book = books[uuid];
+    if (!this.books || !this.books[uuid]) {
+      this.books = this.getBooks();
+    }
+    const book = this.books[uuid];
     if (!book) {
       return res.render('404', {
         title: 'Calibre Web',
@@ -104,8 +109,10 @@ function run (opts = {}) {
 
   app.get('/book/:uuid/book.epub', (req, res) => {
     const uuid = req.params.uuid;
-    const books = this.getBooks();
-    const book = books[uuid];
+    if (!this.books || !this.books[uuid]) {
+      this.books = this.getBooks();
+    }
+    const book = this.books[uuid];
     if (!book) {
       return res.render('404', {
         title: 'Calibre Web',

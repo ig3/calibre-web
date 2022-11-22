@@ -29,7 +29,7 @@ function run (opts = {}) {
   self.opts.databases.forEach(dbPath => {
     self.dbs.push({
       path: dbPath,
-      dbh: openDatabase(dbPath)
+      // dbh: openDatabase(dbPath)
     });
   });
   console.log('OK');
@@ -157,14 +157,17 @@ function getBooks () {
   const self = this;
   const books = {};
   self.dbs.forEach(db => {
+    const dbh = openDatabase(db.path);
+    /*
     if (!db.dbh) {
       console.log('open: ' + db.path);
       db.dbh = openDatabase(db.path);
     }
-    if (db.dbh) {
+    */
+    if (dbh) {
       console.log('read: ' + db.path);
       try {
-        db.dbh.prepare(`select
+        dbh.prepare(`select
             books.id,
             uuid,
             title,
@@ -182,9 +185,10 @@ function getBooks () {
           record.path = path.join(db.path, record.path);
           books[record.uuid] = record;
         });
+        dbh.close();
       } catch (err) {
         console.error('read ' + db.path + ': ', err);
-        db.dbh = undefined;
+        dbh = undefined;
       }
     } else {
       console.log(db.path + ': unavailable');

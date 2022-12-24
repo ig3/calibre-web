@@ -1,6 +1,5 @@
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
 
 const api = {
@@ -28,7 +27,7 @@ function run (opts = {}) {
   self.dbs = [];
   self.opts.databases.forEach(dbPath => {
     self.dbs.push({
-      path: dbPath,
+      path: dbPath
       // dbh: openDatabase(dbPath)
     });
   });
@@ -37,7 +36,7 @@ function run (opts = {}) {
   const express = require('express');
   const app = express();
   const expressHandlebars = require('express-handlebars');
-  const hbs = expressHandlebars.create({});
+  // const hbs = expressHandlebars.create({});
   app.engine('handlebars', expressHandlebars.engine());
   app.set('views', path.join(__dirname, 'views'));
   app.set('view engine', 'handlebars');
@@ -45,7 +44,7 @@ function run (opts = {}) {
     express.static(
       path.join(__dirname, 'public'),
       {
-        maxAge: "1 week"
+        maxAge: '1 week'
       }
     )
   );
@@ -53,16 +52,14 @@ function run (opts = {}) {
   app.get('/', (req, res) => {
     this.books = this.getBooks();
     const bookList = Object.keys(this.books)
-//    .sort((a, b) => books[a].title.localeCompare(books[b].title))
-//    .sort((a, b) => books[b].id - books[a].id)
+    //    .sort((a, b) => books[a].title.localeCompare(books[b].title))
+    //    .sort((a, b) => books[b].id - books[a].id)
     .sort((a, b) => this.books[a].timestamp.localeCompare(
       this.books[b].timestamp))
     .map(key => {
       const book = JSON.parse(JSON.stringify(this.books[key]));
-      if (book.title.length > 10)
-        book.title = book.title.slice(0,10) + '...'
-      if (book.author.length > 10)
-        book.author = book.author.slice(0,10) + '...'
+      if (book.title.length > 10) { book.title = book.title.slice(0, 10) + '...'; }
+      if (book.author.length > 10) { book.author = book.author.slice(0, 10) + '...'; }
       return book;
     });
     res.render('home', {
@@ -149,7 +146,6 @@ function openDatabase (dbPath) {
   } catch (e) {
     console.error(e.message);
     console.error(dbPath + ' failed to open - ignored');
-    return;
   }
 }
 
@@ -188,7 +184,6 @@ function getBooks () {
         dbh.close();
       } catch (err) {
         console.error('read ' + db.path + ': ', err);
-        dbh = undefined;
       }
     } else {
       console.log(db.path + ': unavailable');

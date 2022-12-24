@@ -13,8 +13,6 @@ const server = require('./calibre-web')(config);
 
 server.run();
 
-
-
 /**
  * getConfig loads configuration from any of:
  *  /etc/calibre-web.json

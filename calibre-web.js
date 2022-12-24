@@ -45,7 +45,7 @@ function run (opts = {}) {
     express.static(
       path.join(__dirname, 'public'),
       {
-        maxAge: "1d"
+        maxAge: "1 week"
       }
     )
   );
@@ -85,7 +85,7 @@ function run (opts = {}) {
     }
     const coverPath = path.join(book.path, 'cover.jpg');
     res.sendFile(coverPath, {
-      maxAge: '1d'
+      maxAge: '1 week'
     });
   });
 

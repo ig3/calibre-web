@@ -14,11 +14,12 @@
     width: '100%',
     height: '100%'
   });
-  let displayed = rendition.display();
 
   const cfi = decodeURIComponent(location.hash.substr(1));
   if (cfi) {
     rendition.display(cfi);
+  } else {
+    rendition.display();
   }
 
   book.ready.then(() => {
@@ -62,7 +63,7 @@
   });
 
   rendition.on('relocated', function(location) {
-    console.log('relocated');
+    console.log('relocated: ', location);
     updateToc(location.start.href);
 
     const newLocation = 
@@ -101,6 +102,7 @@
   });
 
   window.addEventListener('unload', function () {
+    console.log('unload event handler');
     this.book.destroy();
   });
 
@@ -120,6 +122,7 @@
     $select.onchange = function() {
       const index = $select.selectedIndex,
         url = $select.options[index].getAttribute('ref');
+      console.log('toc select onchange ' + url);
       rendition.display(url);
       document.body.focus();
       return false;

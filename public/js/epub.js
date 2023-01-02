@@ -311,7 +311,6 @@ function insert(item, array, compareFunction) {
  */
 
 function locationOf(item, array, compareFunction, _start, _end) {
-  console.log('function locationOf: ', item, array, compareFunction, _start, _end);
   var start = _start || 0;
   var end = _end || array.length;
   var pivot = parseInt(start + (end - start) / 2);
@@ -590,7 +589,7 @@ function createBase64Url(content, mime) {
     return;
   }
 
-  data = btoa(encodeURIComponent(content));
+  data = btoa(content);
   datauri = "data:" + mime + ";base64," + data;
   return datauri;
 }
@@ -2033,6 +2032,7 @@ class EpubCFI {
         range.setStart(missed.container, missed.offset);
       }
     } else {
+      console.log("No startContainer found for", this.toString()); // No start found
 
       return null;
     }
@@ -4130,7 +4130,8 @@ class default_DefaultViewManager {
       flow: "scrolled",
       ignoreClass: "",
       fullsize: undefined,
-      allowScriptedContent: false
+      allowScriptedContent: false,
+      allowPopups: false
     });
     Object(core["extend"])(this.settings, options.settings || {});
     this.viewSettings = {
@@ -4143,7 +4144,8 @@ class default_DefaultViewManager {
       width: 0,
       height: 0,
       forceEvenPages: true,
-      allowScriptedContent: this.settings.allowScriptedContent
+      allowScriptedContent: this.settings.allowScriptedContent,
+      allowPopups: this.settings.allowPopups
     };
     this.rendered = false;
   }
@@ -4422,7 +4424,7 @@ class default_DefaultViewManager {
 
     if (this.settings.direction === 'rtl') {
       /***
-      	the `floor` function above (L343) is on positive values, so we should add one `layout.delta` 
+      	the `floor` function above (L343) is on positive values, so we should add one `layout.delta`
       	to distX or use `Math.ceil` function, or multiply offset.left by -1
       	before `Math.floor`
       */
@@ -5343,38 +5345,40 @@ class Mapping {
 
 
   findTextStartRange(node, start, end) {
-    var ranges = this.splitTextNodeIntoRanges(node);
-    var range;
-    var pos;
-    var left, top, right;
+    const range = new Range();
+    range.setStart(node, 0);
+    let lb = 0;
+    let ub = node.length; // node should be a text node
 
-    for (var i = 0; i < ranges.length; i++) {
-      range = ranges[i];
-      pos = range.getBoundingClientRect();
+    while (lb < ub) {
+      const mid = Math.floor((lb + ub) / 2);
+      range.setEnd(node, mid);
+      const rect = range.getBoundingClientRect();
 
       if (this.horizontal && this.direction === "ltr") {
-        left = pos.left;
-
-        if (left >= start) {
-          return range;
+        if (rect.right > start) {
+          ub = mid - 1;
+        } else {
+          lb = mid + 1;
         }
       } else if (this.horizontal && this.direction === "rtl") {
-        right = pos.right;
-
-        if (right <= end) {
-          return range;
+        if (rect.right <= end) {
+          lb = mid + 1;
+        } else {
+          ub = mid - 1;
         }
       } else {
-        top = pos.top;
-
-        if (top >= start) {
-          return range;
+        if (rect.top >= start) {
+          ub = mid - 1;
+        } else {
+          lb = mid + 1;
         }
-      } // prev = range;
-
+      }
     }
 
-    return ranges[0];
+    range.setStart(node, lb);
+    range.setEnd(node, node.length);
+    return range;
   }
   /**
    * Find Text End Range
@@ -5387,50 +5391,41 @@ class Mapping {
 
 
   findTextEndRange(node, start, end) {
-    var ranges = this.splitTextNodeIntoRanges(node);
-    var prev;
-    var range;
-    var pos;
-    var left, right, top, bottom;
+    const range = new Range();
+    range.setStart(node, 0);
+    let lb = 0;
+    let ub = node.length; // node should be a text node
 
-    for (var i = 0; i < ranges.length; i++) {
-      range = ranges[i];
-      pos = range.getBoundingClientRect();
+    while (lb < ub) {
+      const mid = Math.floor((lb + ub) / 2);
+      range.setEnd(node, mid);
+      const rect = range.getBoundingClientRect();
 
       if (this.horizontal && this.direction === "ltr") {
-        left = pos.left;
-        right = pos.right;
-
-        if (left > end && prev) {
-          return prev;
-        } else if (right > end) {
-          return range;
+        if (rect.right > end) {
+          ub = mid - 1;
+        } else {
+          lb = mid + 1;
         }
       } else if (this.horizontal && this.direction === "rtl") {
-        left = pos.left;
-        right = pos.right;
-
-        if (right < start && prev) {
-          return prev;
-        } else if (left < start) {
-          return range;
+        if (rect.right <= start) {
+          lb = mid + 1;
+        } else {
+          ub = mid - 1;
         }
       } else {
-        top = pos.top;
-        bottom = pos.bottom;
-
-        if (top > end && prev) {
-          return prev;
-        } else if (bottom > end) {
-          return range;
+        if (rect.bottom > end) {
+          ub = mid - 1;
+        } else {
+          lb = mid + 1;
         }
       }
-
-      prev = range;
-    } // Ends before limit
+    } // ub === lb
 
 
-    return ranges[ranges.length - 1];
+    range.setStart(node, 0);
+    range.setEnd(node, ub);
+    return range;
   }
   /**
    * Split up a text node into ranges for each word
@@ -8268,6 +8263,7 @@ var continuous = __webpack_require__(22);
  * @param {boolean | object} [options.snap=false] use snap scrolling
  * @param {string} [options.defaultDirection='ltr'] default text direction
  * @param {boolean} [options.allowScriptedContent=false] enable running scripts in content
+ * @param {boolean} [options.allowPopups=false] enable opening popup in content
  */
 
 class rendition_Rendition {
@@ -8287,7 +8283,8 @@ class rendition_Rendition {
       script: null,
       snap: false,
       defaultDirection: "ltr",
-      allowScriptedContent: false
+      allowScriptedContent: false,
+      allowPopups: false
     });
     Object(core["extend"])(this.settings, options);
 
@@ -9392,7 +9389,8 @@ class IframeView {
       globalLayoutProperties: {},
       method: undefined,
       forceRight: false,
-      allowScriptedContent: false
+      allowScriptedContent: false,
+      allowPopups: false
     }, options || {});
     this.id = "epubjs-view-" + Object(_utils_core__WEBPACK_IMPORTED_MODULE_1__["uuid"])();
     this.section = section;
@@ -9457,6 +9455,10 @@ class IframeView {
 
     if (this.settings.allowScriptedContent) {
       this.iframe.sandbox += " allow-scripts";
+    }
+
+    if (this.settings.allowPopups) {
+      this.iframe.sandbox += " allow-popups";
     }
 
     this.iframe.setAttribute("enable-annotation", "true");
@@ -10738,7 +10740,8 @@ class continuous_ContinuousViewManager extends managers_default["a" /* default *
       height: undefined,
       snap: false,
       afterScrolledTimeout: 10,
-      allowScriptedContent: false
+      allowScriptedContent: false,
+      allowPopups: false
     });
     Object(core["extend"])(this.settings, options.settings || {}); // Gap can be 0, but defaults doesn't handle that
 
@@ -10754,7 +10757,8 @@ class continuous_ContinuousViewManager extends managers_default["a" /* default *
       width: 0,
       height: 0,
       forceEvenPages: false,
-      allowScriptedContent: this.settings.allowScriptedContent
+      allowScriptedContent: this.settings.allowScriptedContent,
+      allowPopups: this.settings.allowPopups
     };
     this.scrollTop = 0;
     this.scrollLeft = 0;
@@ -15840,23 +15844,17 @@ class navigation_Navigation {
 
 
   get(target) {
-    console.log('epubjs navigation.get: ', target);
     var index;
 
     if (!target) {
       return this.toc;
     }
 
-    console.log('tocByHref: ', this.tocByHref);
     if (target.indexOf("#") === 0) {
-      console.log('tocById: ', this.tocById);
       index = this.tocById[target.substring(1)];
     } else if (target in this.tocByHref) {
-      console.log('tocByHref: ', this.tocByHref);
       index = this.tocByHref[target];
     }
-
-    console.log('epubjs navigation.get index: ', index);
 
     return this.getByIndex(target, index, this.toc);
   }

@@ -1,5 +1,5 @@
-<div id="title">{{title}}</div>
 <select id="toc"></select>
+<div id="title">{{title}}</div>
 <div id="viewer" class="spreads"></div>
 <a id="prev" href="#prev" class="arrow">‹</a>
 <a id="next" href="#next" class="arrow">›</a>
@@ -8,11 +8,15 @@
 <script src="/js/epub.js"></script>
 
 <script>
+  let innerWidth = window.innerWidth;
+  let innerHeight = window.innerHeight;
   let book = ePub("/book/{{uuid}}/book.epub");
+  const viewer = document.getElementById('viewer');
+  viewer.style.height = viewHeight() + 'px';
   let rendition = book.renderTo("viewer", {
     method: 'default',
-    width: '100%',
-    height: '100%'
+    width: viewWidth(),
+    height: viewHeight()
   });
 
   const cfi = decodeURIComponent(location.hash.substr(1));
@@ -58,12 +62,10 @@
   const title = document.getElementById('title');
 
   rendition.on('rendered', function(section) {
-    console.log('rendered');
     updateToc(section.href);
   });
 
   rendition.on('relocated', function(location) {
-    console.log('relocated: ', location);
     updateToc(location.start.href);
 
     const newLocation = 
@@ -91,7 +93,6 @@
   });
 
   rendition.on('layout', layout => {
-    console.log('layout');
     const viewer = document.getElementById('viewer');
 
     if (layout.spread) {
@@ -102,7 +103,6 @@
   });
 
   window.addEventListener('unload', function () {
-    console.log('unload event handler');
     this.book.destroy();
   });
 
@@ -122,7 +122,6 @@
     $select.onchange = function() {
       const index = $select.selectedIndex,
         url = $select.options[index].getAttribute('ref');
-      console.log('toc select onchange ' + url);
       rendition.display(url);
       document.body.focus();
       return false;
@@ -138,6 +137,42 @@
         $options[i].selected = true;
       }
     }
+  }
+
+  let resizeTimer;
+  addEventListener('resize', (e) => {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      resizeTimer = undefined;
+      handleResize(e);
+    }, 500);
+  });
+
+  function handleResize (e) {
+    const cfi = window.location.hash.substr(1);
+    if (
+      window.innerWidth !== innerWidth ||
+      window.innerHeight > innerHeight ||
+      window.innerHeight < innerHeight - 45 // Allowance for search bar
+    ) {
+      innerWidth = window.innerWidth;
+      innerHeight = window.innerHeight;
+      viewerHeight = innerHeight - 70;
+      rendition.resize(
+        viewWidth(),
+        viewHeight(),
+        cfi
+      );
+      viewer.style.height = viewHeight() + 'px';
+    }
+  }
+
+  function viewHeight () {
+    return innerHeight - 70;
+  }
+
+  function viewWidth () {
+    return innerWidth;
   }
 </script>
 

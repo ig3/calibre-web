@@ -118,7 +118,7 @@ option:not(:checked) {
     position: fixed;
     top: 45%;
     font-size: 64px;
-    color: #e2e2e2;
+    color: #ccc;
     font-family: arial, sans-serif;
     font-weight: bold;
     cursor: pointer;

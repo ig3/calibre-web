@@ -4507,8 +4507,10 @@ class default_DefaultViewManager {
     if (this.isPaginated && this.settings.axis === "horizontal" && (!dir || dir === "ltr")) {
       this.scrollLeft = this.container.scrollLeft;
       left = this.container.scrollLeft + this.container.offsetWidth + this.layout.delta;
+      console.log('page: ', Math.floor(left / this.layout.delta), ' or ', Math.floor(this.container.scrollWidth / this.layout.delta));
 
       if (left <= this.container.scrollWidth) {
+        console.log('correction: page: 1');
         this.scrollBy(this.layout.delta, 0, true);
       } else {
         next = this.views.last().section.next();
@@ -4582,6 +4584,7 @@ class default_DefaultViewManager {
       left = this.container.scrollLeft;
 
       if (left > 0) {
+        console.log('page: ', Math.floor(1 + (left - this.layout.delta) / this.layout.delta), ' of ', Math.floor(this.container.scrollWidth / this.layout.delta));
         this.scrollBy(-this.layout.delta, 0, true);
       } else {
         prev = this.views.first().section.prev();

@@ -60,13 +60,15 @@
   });
 
   const title = document.getElementById('title');
+  const bookTitle = title.innerText;
 
   rendition.on('rendered', function(section) {
-    updateToc(section.href);
+    // updateToc(section.href);
   });
 
   rendition.on('relocated', function(location) {
-    updateToc(location.start.href);
+    console.log('location: ', location);
+    updateToc(location);
 
     const newLocation = 
       window.location.href.replace(window.location.hash,'') +
@@ -128,13 +130,24 @@
     };
   });
 
-  function updateToc (href) {
+  function updateToc (location) {
+    console.log('updateToc: ', location);
+    const href = location.start.href;
+    console.log('href: ', href);
     const $select = document.getElementById('toc');
     const $options = $select.querySelectorAll('option');
     $select.selectedIndex = -1;
     for (let i = 0; i < $options.length; ++i) {
       if ($options[i].getAttribute('ref').startsWith(href)) {
+        console.log('matched: ', $options[i]);
         $options[i].selected = true;
+        console.log('set selected');
+        const chapterTitle = $options[i].text;
+        const title = document.getElementById('title');
+        console.log('title is: ', title);
+        title.innerHTML = bookTitle + ' - ' + chapterTitle +
+          ' page ' + location.start.displayed.page +
+          ' of ' + location.start.displayed.total;
       }
     }
   }

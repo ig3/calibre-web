@@ -27,7 +27,7 @@ body {
 }
 
 #toc {
-  float: left;
+  position: fixed;
   background: #999;
   margin: 0;
   padding: 0;

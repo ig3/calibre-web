@@ -137,6 +137,9 @@
     const $select = document.getElementById('toc');
     const $options = $select.querySelectorAll('option');
     $select.selectedIndex = -1;
+    title.innerHTML = bookTitle + ' - ' + href +
+      ' page ' + location.start.displayed.page +
+      ' of ' + location.start.displayed.total;
     for (let i = 0; i < $options.length; ++i) {
       if ($options[i].getAttribute('ref').startsWith(href)) {
         console.log('matched: ', $options[i]);

@@ -89,6 +89,17 @@ website. When not processing a request it should not consume CPU.
 It uses epub.js in the browser to display the book. Once the book is
 downloaded, there is no more load on the server as it is browsed.
 
+## System Requirements
+
+I have only run this on Debian Linux. Not tested on other distributions or
+operating systems.
+
+Requires [Node.js](https://nodejs.org). I am running it on v18.13.0. Not
+tested on other versions.
+
+When idle, with a couple of Calibre libraries totaling over 500 books, top
+reports under 50K physical memory consumed and 0% CPU. It occupies a little
+under 25MB disk space. 
 
 ## Motivation
 

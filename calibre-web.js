@@ -126,6 +126,11 @@ function run (opts = {}) {
     });
   });
 
+  app.use((req, res, next) => {
+    console.log('unmatched request: ', req.url);
+    res.status(404).send('Not found: ' + req.url);
+  });
+
   const server = app.listen(this.opts.port, () => {
     const host = server.address().address;
     const port = server.address().port;

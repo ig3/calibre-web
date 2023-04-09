@@ -18,14 +18,14 @@
   "license": "ISC",
   "devDependencies": {
     "@ig3/eslint-config-entrain": "^3.0.1",
-    "c8": "^7.12.0",
+    "c8": "^7.13.0",
     "multi-tape": "^1.7.0",
-    "tape": "^5.6.0"
+    "tape": "^5.6.3"
   },
   "dependencies": {
-    "better-sqlite3": "^7.6.2",
-    "express": "^4.18.1",
-    "express-handlebars": "^6.0.6",
+    "better-sqlite3": "^8.3.0",
+    "express": "^4.18.2",
+    "express-handlebars": "^7.0.4",
     "path": "^0.12.7"
   },
   "eslintConfig": {

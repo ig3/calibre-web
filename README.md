@@ -110,5 +110,6 @@ all JavaScript implementation.
 
 ## Changes
 
-It's early days yet. Not published and too unsettled for changes to be
-noteworthy. See the git log and code for details.
+### 1.0.8 - 20230410
+
+Update dependencies.

@@ -53,6 +53,26 @@
         book.package.metadata.direction === 'rtl' ?
           rendition.prev() : rendition.next();
       }
+
+      // Up key - previous chapter
+      if ((e.keyCode || e.which) == 38) {
+        const $select = document.getElementById('toc');
+        const index = $select.selectedIndex;
+        if (index > 0) {
+          const url = $select.options[index - 1].getAttribute('ref');
+          rendition.display(url);
+        }
+      }
+
+      // Down key - next chapter
+      if ((e.keyCode || e.which) == 40) {
+        const $select = document.getElementById('toc');
+        const index = $select.selectedIndex;
+        if (index < $select.options.length - 1) {
+          const url = $select.options[index + 1].getAttribute('ref');
+          rendition.display(url);
+        }
+      }
     };
 
     rendition.on('keydown', keyListener);

@@ -101,6 +101,13 @@ When idle, with a couple of Calibre libraries totaling over 500 books, top
 reports under 50K physical memory consumed and 0% CPU. It occupies a little
 under 25MB disk space. 
 
+## Dependencies
+
+In addition to those listed in package.json, this depends on
+[@ig3/epub.js](https://github.com/ig3/epub.js) and
+jszip.min.js, included in the public/js directory. 
+
+
 ## Motivation
 
 I used [Calibre-web](https://github.com/janeczku/calibre-web) for a while
@@ -113,3 +120,7 @@ all JavaScript implementation.
 ### 1.0.8 - 20230410
 
 Update dependencies.
+
+### 1.0.9 - WIP
+
+Up and down arrow keys for prev and next chapter navigation

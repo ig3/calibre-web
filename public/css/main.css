@@ -130,6 +130,7 @@ option:not(:checked) {
 img.cover {
   height: 210px;
   width: 140px;
+  display: block;
 }
 
 div.title {
@@ -146,11 +147,11 @@ div.book {
   display: inline-block;
   margin: 1em;
   width: 140px;
-  height: 180px;
 }
 
 div.book a {
   text-decoration: none;
+  display: block;
 }
 
 #books {

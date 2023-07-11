@@ -137,6 +137,14 @@
       option.textContent = chapter.label;
       option.setAttribute('ref', chapter.href);
       docfrag.appendChild(option);
+      if (chapter.subitems && chapter.subitems.length) {
+        chapter.subitems.forEach(function(subChapter) {
+          const option = document.createElement('option');
+          option.innerHTML = '&nbsp;' + subChapter.label;
+          option.setAttribute('ref', subChapter.href);
+          docfrag.appendChild(option);
+        });
+      }
     });
 
     $select.appendChild(docfrag);

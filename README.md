@@ -124,3 +124,5 @@ Update dependencies.
 ### 1.0.9 - WIP
 
 Up and down arrow keys for prev and next chapter navigation
+
+Handle sub-chapters in toc

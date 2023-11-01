@@ -87,7 +87,6 @@
   });
 
   rendition.on('relocated', function(location) {
-    console.log('location: ', location);
     updateToc(location);
 
     const newLocation = 
@@ -159,27 +158,41 @@
   });
 
   function updateToc (location) {
-    console.log('updateToc: ', location);
     const href = location.start.href;
-    console.log('href: ', href);
     const $select = document.getElementById('toc');
     const $options = $select.querySelectorAll('option');
     $select.selectedIndex = -1;
-    title.innerHTML = bookTitle + ' - ' + href +
-      ' page ' + location.start.displayed.page +
-      ' of ' + location.start.displayed.total;
+    let chapter;
+    const EpubCFI = new ePub.CFI();
     for (let i = 0; i < $options.length; ++i) {
       if ($options[i].getAttribute('ref').startsWith(href)) {
-        console.log('matched: ', $options[i]);
-        $options[i].selected = true;
-        console.log('set selected');
-        const chapterTitle = $options[i].text;
-        const title = document.getElementById('title');
-        console.log('title is: ', title);
-        title.innerHTML = bookTitle + ' - ' + chapterTitle +
-          ' page ' + location.start.displayed.page +
-          ' of ' + location.start.displayed.total;
+        let cfi = $options[i].getAttribute('cfi');
+        if (!cfi) {
+          const chapterHref = $options[i].getAttribute('ref');
+          const section = book.spine.get(chapterHref);
+          const id = chapterHref.split('#')[1];
+          const el = (id ? section.document.getElementById(id) :
+          section.document.body);
+          cfi = section.cfiFromElement(el);
+          $options[i].setAttribute('cfi', cfi);
+        }
+        if (
+          EpubCFI.compare(location.start.cfi, cfi) > 0 ||
+          EpubCFI.compare(location.end.cfi, cfi) > 0
+        ) {
+          chapter = i;
+        }
       }
+    }
+    if (chapter !== undefined) {
+      $options[chapter].selected = true;
+      const chapterTitle = $options[chapter].text;
+      const title = document.getElementById('title');
+      title.innerHTML = bookTitle + ' - ' + chapterTitle +
+        ' page ' + location.start.displayed.page +
+        ' of ' + location.start.displayed.total;
+    } else {
+      console.log('no chapter for: ', location);
     }
   }
 

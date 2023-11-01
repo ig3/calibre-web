@@ -4507,7 +4507,7 @@ class default_DefaultViewManager {
     if (this.isPaginated && this.settings.axis === "horizontal" && (!dir || dir === "ltr")) {
       this.scrollLeft = this.container.scrollLeft;
       left = this.container.scrollLeft + this.container.offsetWidth + this.layout.delta;
-      console.log('page: ', Math.floor(left / this.layout.delta), ' of ', Math.floor(this.container.scrollWidth / this.layout.delta));
+      // console.log('page: ', Math.floor(left / this.layout.delta), ' of ', Math.floor(this.container.scrollWidth / this.layout.delta));
 
       if (left <= this.container.scrollWidth) {
         this.scrollBy(this.layout.delta, 0, true);
@@ -8549,7 +8549,6 @@ class rendition_Rendition {
     }
 
     section = this.book.spine.get(target);
-
     if (!section) {
       displaying.reject(new Error("No Section Found"));
       return displayed;

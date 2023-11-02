@@ -58,8 +58,8 @@ function run (opts = {}) {
       this.books[b].timestamp))
     .map(key => {
       const book = JSON.parse(JSON.stringify(this.books[key]));
-      if (book.title.length > 10) { book.title = book.title.slice(0, 10) + '...'; }
-      if (book.author.length > 10) { book.author = book.author.slice(0, 10) + '...'; }
+      // if (book.title.length > 10) { book.title = book.title.slice(0, 10) + '...'; }
+      // if (book.author.length > 10) { book.author = book.author.slice(0, 10) + '...'; }
       return book;
     });
     res.render('home', {

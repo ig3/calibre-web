@@ -165,4 +165,15 @@ div.book a {
   background-color: #445;
 }
 
+#tags {
+  color: white;
+}
+
+#tags a {
+  color: white;
+}
+
+#tags a:visited {
+  color: white;
+}
 

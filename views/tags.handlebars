@@ -1,0 +1,39 @@
+<div id="tags">
+Selected: {{selectedTags}}</br>
+<button type="button">Submit</button></br>
+Available:</br>
+<input type="checkbox" id="All" name="All" value="All"/>
+<label for="All">All</label></br>
+{{#each availableTags}}
+<input type="checkbox" id="{{this}}" name="{{this}}" value="{{this}}"/>
+<label for="{{this}}">{{this}}</label></br>
+{{/each}}
+<button type="button">Submit</button>
+</div>
+
+<script>
+  (function () {
+  document.querySelector('button').addEventListener('click',
+  event => {
+    const selected = {};
+    document.querySelectorAll('input')
+    .forEach(element => {
+      if (element.checked) {
+        console.log(element.name);
+        selected[element.name] = 1;
+      }
+    });
+    console.log('selected: ' + JSON.stringify(selected));
+    const expires = new Date();
+    expires.setHours(expires.getHours() + 1);
+    const tags = JSON.stringify(Object.keys(selected));
+    console.log('tags value: ' + tags);
+    console.log('tags value encoded: ' + encodeURI(tags));
+    const cookie = "tags=" + encodeURI(tags) + 
+    ';expires=' + expires.toUTCString() + ';SameSite=Strict';
+    console.log('cookie: ' + cookie);
+    document.cookie = cookie;
+    window.location = '/';
+  });
+  })();
+</script>

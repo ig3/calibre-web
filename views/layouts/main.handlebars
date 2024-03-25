@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <title>{{title}}</title>
   <link rel="stylesheet" href="/css/main.css">
 </head>
@@ -9,5 +9,16 @@
   <div id="content">
     {{{body}}}
   </div>
+  <script>
+    document.addEventListener("keypress", keyCapt, false);
+    function keyCapt (e) {
+      console.log(e.keyCode);
+      if (e.keyCode === 104) { // h
+        window.location = '/';
+      } else if (e.keyCode === 116) { // t
+        window.location = '/tags';
+      }
+    }
+  </script>
 </body>
 </html>

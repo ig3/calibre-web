@@ -4,7 +4,8 @@ const path = require('path');
 
 const api = {
   run,
-  getBooks
+  getBooks,
+  getTags
 };
 
 module.exports = (options = {}) => {
@@ -35,6 +36,10 @@ function run (opts = {}) {
 
   const express = require('express');
   const app = express();
+
+  const cookieParser = require('cookie-parser');
+  app.use(cookieParser());
+
   const expressHandlebars = require('express-handlebars');
   // const hbs = expressHandlebars.create({});
   app.engine('handlebars', expressHandlebars.engine());
@@ -50,13 +55,31 @@ function run (opts = {}) {
   );
 
   app.get('/', (req, res) => {
+    console.log('Cookie header: ' + req.get('Cookie'));
+    console.log('tags cookie: ', req.cookies.tags);
+    console.log(typeof req.cookies.tags);
+    const tags = req.cookies && req.cookies.tags
+      ? JSON.parse(req.cookies.tags)
+      : [ 'General' ];
+    if (tags.length === 0) tags.push('General');
+    console.log('tags: ' + JSON.stringify(tags));
     this.books = this.getBooks();
     const bookList = Object.keys(this.books)
     //    .sort((a, b) => books[a].title.localeCompare(books[b].title))
     //    .sort((a, b) => books[b].id - books[a].id)
+    .filter(key => {
+      const book = this.books[key];
+      if (tags.includes('All')) return true;
+      if (book.tags) {
+        const intersection = tags.filter(tag => book.tags.includes(tag));
+        if (intersection.length > 0) return true;
+      }
+      return false;
+    })
     .sort((a, b) => this.books[a].timestamp.localeCompare(
       this.books[b].timestamp))
     .map(key => {
+      // console.log('book: ' + JSON.stringify(this.books[key], null, 2));
       const book = JSON.parse(JSON.stringify(this.books[key]));
       // if (book.title.length > 10) { book.title = book.title.slice(0, 10) + '...'; }
       // if (book.author.length > 10) { book.author = book.author.slice(0, 10) + '...'; }
@@ -64,7 +87,23 @@ function run (opts = {}) {
     });
     res.render('home', {
       title: 'Calibre Web',
+      tags: tags,
       bookList: bookList
+    });
+  });
+
+  app.get('/tags', (req, res) => {
+    console.log('Cookie header: ' + req.get('Cookie'));
+    const selectedTags = req.cookies && req.cookies.tags
+      ? JSON.parse(req.cookies.tags)
+      : [ 'General' ];
+    console.log('typeof selectedTags: ' + typeof selectedTags);
+    console.log('selectedTags: ', JSON.stringify(selectedTags, null, 2));
+    const availableTags = this.getTags();
+    res.render('tags', {
+      title: 'Calibre Web',
+      selectedTags: selectedTags,
+      availableTags: availableTags.sort()
     });
   });
 
@@ -139,7 +178,6 @@ function run (opts = {}) {
 }
 
 function openDatabase (dbPath) {
-  console.log('open: ' + dbPath);
   try {
     const dbh = require('better-sqlite3')(
       path.join(dbPath, 'metadata.db'),
@@ -174,13 +212,20 @@ function getBooks () {
             title,
             author_sort as author,
             path,
-            name,
-            timestamp
+            data.name,
+            timestamp,
+            GROUP_CONCAT(tags.name) as tags
           from books
           join data on
             data.book = books.id
+          left join books_tags_link on
+            books_tags_link.book = books.id
+          left join tags on
+            tags.id = books_tags_link.tag
           where
             data.format = 'EPUB'
+          group by
+            books.id
         `).all()
         .forEach(record => {
           record.path = path.join(db.path, record.path);
@@ -195,4 +240,28 @@ function getBooks () {
     }
   });
   return books;
+}
+
+// getTags returns the union of tags across all databases, as an array
+function getTags () {
+  const self = this;
+  const tags = {}
+  self.dbs.forEach(db => {
+    const dbh = openDatabase(db.path);
+    if (dbh) {
+      try {
+        dbh.prepare('select name from tags')
+        .all()
+        .forEach(record => {
+          tags[record.name] = true;
+        });
+        dbh.close();
+      } catch (err) {
+        console.error('read ' + db.path + ': ', err);
+      }
+    } else {
+      console.log(db.path + ': unavailable');
+    }
+  });
+  return Object.keys(tags);
 }

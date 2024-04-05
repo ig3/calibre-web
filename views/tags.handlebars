@@ -13,27 +13,20 @@ Available:</br>
 
 <script>
   (function () {
-  document.querySelector('button').addEventListener('click',
-  event => {
-    const selected = {};
-    document.querySelectorAll('input')
-    .forEach(element => {
-      if (element.checked) {
-        console.log(element.name);
-        selected[element.name] = 1;
+    document.addEventListener('click', evt => {
+      if (evt.target.tagName === 'BUTTON') {
+        const selectedTags = JSON.stringify(
+          Array.from(
+            document.querySelectorAll("input[type='checkbox']:checked")
+          ).map(el => el.name)
+        );
+        const expires = new Date();
+        expires.setHours(expires.getHours() + 1);
+        const cookie = "tags=" + encodeURI(selectedTags) + 
+        ';expires=' + expires.toUTCString() + ';SameSite=Strict';
+        document.cookie = cookie;
+        window.location = '/';
       }
     });
-    console.log('selected: ' + JSON.stringify(selected));
-    const expires = new Date();
-    expires.setHours(expires.getHours() + 1);
-    const tags = JSON.stringify(Object.keys(selected));
-    console.log('tags value: ' + tags);
-    console.log('tags value encoded: ' + encodeURI(tags));
-    const cookie = "tags=" + encodeURI(tags) + 
-    ';expires=' + expires.toUTCString() + ';SameSite=Strict';
-    console.log('cookie: ' + cookie);
-    document.cookie = cookie;
-    window.location = '/';
-  });
   })();
 </script>

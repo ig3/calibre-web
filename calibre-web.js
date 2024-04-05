@@ -88,7 +88,9 @@ function run (opts = {}) {
     res.render('home', {
       title: 'Calibre Web',
       tags: tags,
-      bookList: bookList
+      bookList: bookList,
+      refresh: true,
+      shortcuts: true
     });
   });
 
@@ -103,7 +105,8 @@ function run (opts = {}) {
     res.render('tags', {
       title: 'Calibre Web',
       selectedTags: selectedTags,
-      availableTags: availableTags.sort()
+      availableTags: availableTags.sort(),
+      shortcuts: true
     });
   });
 

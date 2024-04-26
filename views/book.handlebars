@@ -11,6 +11,7 @@
   let innerWidth = window.innerWidth;
   let innerHeight = window.innerHeight;
   let book = ePub("/book/{{uuid}}/book.epub");
+  let replaceState = false;
   const viewer = document.getElementById('viewer');
   viewer.style.height = viewHeight() + 'px';
   let rendition = book.renderTo("viewer", {
@@ -27,6 +28,22 @@
   }
 
   book.ready.then(() => {
+    window.addEventListener('popstate', (event) => {
+      console.log('popstate');
+      console.log('href: ' + window.location.href);
+      const cfi = decodeURIComponent(location.hash.substr(1));
+      if (cfi) {
+        rendition.display(cfi);
+      } else {
+        rendition.display();
+      }
+    });
+
+    window.addEventListener('hashchange', (event) => {
+      console.log('hashchange');
+      console.log('href: ' + window.location.href);
+    });
+
     const next = document.getElementById('next');
     next.addEventListener('click', e => {
       book.package.metadata.direction === 'rtl' ?
@@ -87,12 +104,23 @@
   });
 
   rendition.on('relocated', function(location) {
+    console.log('relocated');
     updateToc(location);
 
+    // When location changes, it will sometimes be good to generate
+    // history, allowing Back to return. For example, when a link is
+    // followed to a glossary item, it would be nice to be able to go back
+    // to where the link was clicked.
+    // If the page is reloaded, the current location should be loaded, not
+    // some historic location.
+    // Therefore: either pushState to add history or replaceState to update
+    // location without generating history. Either way, the current href is
+    // updated so that a reload loads the current location.
     const newLocation = 
       window.location.href.replace(window.location.hash,'') +
       '#' + location.start.cfi;
-    window.history.replaceState(null, '', newLocation);
+    // window.history.replaceState(null, '', newLocation);
+    window.history.pushState(null, '', newLocation);
 
     const next = book.package.metadata.direction === 'rtl' ?
       document.getElementById('prev') : document.getElementById('next');

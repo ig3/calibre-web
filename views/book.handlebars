@@ -29,8 +29,6 @@
 
   book.ready.then(() => {
     window.addEventListener('popstate', (event) => {
-      console.log('popstate');
-      console.log('href: ' + window.location.href);
       const cfi = decodeURIComponent(location.hash.substr(1));
       if (cfi) {
         rendition.display(cfi);
@@ -104,8 +102,9 @@
   });
 
   rendition.on('relocated', function(location) {
-    console.log('relocated');
     updateToc(location);
+
+    document.title = bookTitle + ' p. ' + location.start.displayed.page;
 
     // When location changes, it will sometimes be good to generate
     // history, allowing Back to return. For example, when a link is
@@ -120,7 +119,9 @@
       window.location.href.replace(window.location.hash,'') +
       '#' + location.start.cfi;
     // window.history.replaceState(null, '', newLocation);
-    window.history.pushState(null, '', newLocation);
+    if (newLocation !== window.location.href) {
+      window.history.pushState(null, '', newLocation);
+    }
 
     const next = book.package.metadata.direction === 'rtl' ?
       document.getElementById('prev') : document.getElementById('next');

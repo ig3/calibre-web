@@ -222,6 +222,10 @@
         ' of ' + location.start.displayed.total;
     } else {
       console.log('no chapter for: ', location);
+      const title = document.getElementById('title');
+      title.innerHTML = bookTitle + ' - chapter ' +
+        ' page ' + location.start.displayed.page +
+        ' of ' + location.start.displayed.total;
     }
   }
 

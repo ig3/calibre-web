@@ -104,8 +104,6 @@
   rendition.on('relocated', function(location) {
     updateToc(location);
 
-    document.title = bookTitle + ' p. ' + location.start.displayed.page;
-
     // When location changes, it will sometimes be good to generate
     // history, allowing Back to return. For example, when a link is
     // followed to a glossary item, it would be nice to be able to go back
@@ -225,14 +223,18 @@
       const chapterTitle = $options[chapter].text;
       const title = document.getElementById('title');
       title.innerHTML = bookTitle + ' - ' + chapterTitle +
-        ' page ' + location.start.displayed.page +
+        ' p ' + location.start.displayed.page +
         ' of ' + location.start.displayed.total;
+      document.title = bookTitle + ' - ' +
+        chapterTitle + ' p' + location.start.displayed.page;
     } else {
       console.log('no chapter for: ', location);
       const title = document.getElementById('title');
-      title.innerHTML = bookTitle + ' - chapter ' +
-        ' page ' + location.start.displayed.page +
+      title.innerHTML = bookTitle + ' - ' + location.start.href +
+        ' p ' + location.start.displayed.page +
         ' of ' + location.start.displayed.total;
+      document.title = bookTitle + ' - ' +
+        location.start.href + ' p' + location.start.displayed.page;
     }
   }
 

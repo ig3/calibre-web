@@ -121,7 +121,9 @@ all JavaScript implementation.
 
 Update dependencies.
 
-### 1.0.9 - WIP
+### 1.0.9 - 20240506
  * Up and down arrow keys for prev and next chapter navigation
  * Handle sub-chapters in toc
  * Fix updateToc to handle href with fragment
+ * Fix toc / navigation
+ * Update dependencies

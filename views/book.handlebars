@@ -163,7 +163,7 @@
     const basePath = book.packaging.navPath || book.packaging.ncxPath;
     const resolveURL = (url) => {
       const base = 'http://example.com/';
-      return new URL(url, base + basePath).href.replace(base, '');
+      return decodeURI(new URL(url, base + basePath).href.replace(base, ''));
     };
     toc.forEach(function(chapter) {
       const option = document.createElement('option');

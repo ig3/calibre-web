@@ -158,23 +158,108 @@
     const $select = document.getElementById('toc'),
       docfrag = document.createDocumentFragment();
     // See: https://github.com/futurepress/epub.js/issues/1084
-    // The href in the toc is relative to the path of the toc, which may be
-    // either a nav document or an ncx document.
-    const basePath = book.packaging.navPath || book.packaging.ncxPath;
-    const resolveURL = (url) => {
-      const base = 'http://example.com/';
-      return decodeURI(new URL(url, base + basePath).href.replace(base, ''));
+    // Paths in the toc are relative to the path of the toc document, which
+    // may be a nav document or an ncx document. But the paths in the spine
+    // are relative to the opf document. To translate, it is necessary to
+    // translate the path from the toc to an absolute path then translate
+    // this to a path relative to the opf document.
+
+    // Return an absolute path, given a path and a base path
+    const resolvePath = (path, base) => {
+      if (path.indexOf('/') === 0) return path;
+      base = base.substring(0,base.lastIndexOf('/'));
+      const thisPath = path.split('/');
+      const basePath = base.split('/');
+      const tl = thisPath.length;
+      const bl = basePath.length;
+
+      let i = 0;
+
+      while (
+        i < tl &&
+        i < bl &&
+        thisPath[i] === '..'
+      ) {
+        i++;
+      }
+
+      if (thisPath[i] === '..') {
+        throw new Error('Invalid path: ' + path);
+      }
+
+      let abs = '';
+
+      if (i < bl) {
+        for(let n = 0; n < bl - i; n++) {
+          abs += basePath[n] + '/';
+        }
+      }
+
+      if (i < tl) {
+        for(let n = i; n < tl-1; n++) {
+          abs += thisPath[n] + '/';
+        }
+        abs += thisPath[tl-1];
+      }
+
+      return abs;
     };
+
+    // Return a relative path given an absolute path and a base path
+    const getRelativeURL = (path, base) => {
+      base = base.substring(0,base.lastIndexOf('/'));
+      const thisPath = path.split('/');
+      const basePath = base.split('/');
+      const tl = thisPath.length;
+      const bl = basePath.length;
+
+      let rel = '';
+
+      let i = 0;
+      while (
+        i < tl &&
+        i < bl &&
+        thisPath[i] === basePath[i]
+      ) {
+        i++;
+      }
+
+      if (i < bl) {
+        for(let n = i; n < bl; n++) {
+          rel += '../';
+        }
+      }
+
+      if (i < tl) {
+        for(let n = i; n < tl-1; n++) {
+          rel += thisPath[n] + '/';
+        }
+        rel += thisPath[tl-1];
+      }
+
+      return rel;
+    }
+    const opfPath = book.path.path;
+    const tocPath = resolvePath(
+      book.packaging.navPath || book.packaging.ncxPath,
+      opfPath
+    );
     toc.forEach(function(chapter) {
       const option = document.createElement('option');
       option.textContent = chapter.label;
-      option.setAttribute('ref', resolveURL(chapter.href, basePath));
+      option.setAttribute(
+        'ref',
+        getRelativeURL(resolvePath(chapter.href, tocPath), opfPath)
+      );
       docfrag.appendChild(option);
       if (chapter.subitems && chapter.subitems.length) {
         chapter.subitems.forEach(function(subChapter) {
           const option = document.createElement('option');
           option.innerHTML = '&nbsp;' + subChapter.label;
-          option.setAttribute('ref', resolveURL(subChapter.href, basePath));
+          option.setAttribute(
+            'ref',
+            getRelativeURL(resolvePath(subChapter.href, tocPath), opfPath)
+          );
           docfrag.appendChild(option);
         });
       }

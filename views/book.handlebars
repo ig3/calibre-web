@@ -159,17 +159,24 @@
   book.loaded.navigation.then(function (toc) {
     const $select = document.getElementById('toc'),
       docfrag = document.createDocumentFragment();
-
+    // See: https://github.com/futurepress/epub.js/issues/1084
+    // The href in the toc is relative to the path of the toc, which may be
+    // either a nav document or an ncx document.
+    const basePath = book.packaging.navPath || book.packaging.ncxPath;
+    const resolveURL = (url) => {
+      const base = 'http://example.com/';
+      return new URL(url, base + basePath).href.replace(base, '');
+    };
     toc.forEach(function(chapter) {
       const option = document.createElement('option');
       option.textContent = chapter.label;
-      option.setAttribute('ref', chapter.href);
+      option.setAttribute('ref', resolveURL(chapter.href, basePath));
       docfrag.appendChild(option);
       if (chapter.subitems && chapter.subitems.length) {
         chapter.subitems.forEach(function(subChapter) {
           const option = document.createElement('option');
           option.innerHTML = '&nbsp;' + subChapter.label;
-          option.setAttribute('ref', subChapter.href);
+          option.setAttribute('ref', resolveURL(subChapter.href, basePath));
           docfrag.appendChild(option);
         });
       }

@@ -50,6 +50,7 @@ Configuration may be stored in:
 
  * /etc/calibre-web.json
  * ~/.calibre-web.json
+ * ~/.config/calibre-web.json
 
 For example:
 

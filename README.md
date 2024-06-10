@@ -51,14 +51,6 @@ Configuration may be stored in:
  * /etc/calibre-web.json
  * ~/.calibre-web.json
 
-There are only two parameters:
-
- * port: the port the server should listen on
- * databases: an array of paths to Calibre databases to be read
-
-The database paths are the paths of the directories containing the
-`metadata.db` files.
-
 For example:
 
 ```
@@ -68,9 +60,37 @@ For example:
     "/usr/local/calibre",
     "/usr/share/calibre1",
     "/usr/share/calibre2"
-  ]
+  ],
+  "excludeTags": [
+    "hidden",
+    "private"
+  ],
+  "showUntagged": true
 }
 ```
+### port
+
+The port the server should listen on.
+
+### databases
+
+An array of paths to Calibre data directories, containing the `metadata.db`
+files.
+
+### defaultTags
+
+An array of tags. Books with these tags will be included in the book list
+if no tags are specified tags cookie of the request.
+
+### excludeTags
+
+An array of tags. Books with these tags will be excluded from the book
+list.
+
+### showUntagged
+
+Set this to true if books without tags should be shown in the book list.
+
 
 ## Features
 

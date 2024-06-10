@@ -60,8 +60,7 @@ function run (opts = {}) {
     console.log(typeof req.cookies.tags);
     const tags = req.cookies && req.cookies.tags
       ? JSON.parse(req.cookies.tags)
-      : [ 'General' ];
-    if (tags.length === 0) tags.push('General');
+      : undefined;
     console.log('tags: ' + JSON.stringify(tags));
     this.books = this.getBooks();
     const bookList = Object.keys(this.books)
@@ -69,12 +68,42 @@ function run (opts = {}) {
     //    .sort((a, b) => books[b].id - books[a].id)
     .filter(key => {
       const book = this.books[key];
-      if (tags.includes('All')) return true;
       if (book.tags) {
-        const intersection = tags.filter(tag => book.tags.includes(tag));
-        if (intersection.length > 0) return true;
+        if (tags) {
+          if (tags.includes('AllAll')) return true;
+          if (tags.includes('All')) {
+            if (self.opts.excludeTags) {
+              const intersection =
+                self.opts.excludeTags
+                .filter(tag => book.tags.includes(tag));
+              return (intersection.length === 0);
+            } else {
+              return true;
+            }
+          }
+          const intersection = tags.filter(tag => book.tags.includes(tag));
+          return (intersection.length > 0);
+        } else {
+          if (self.opts.excludeTags) {
+            const intersection =
+              self.opts.excludeTags
+              .filter(tag => book.tags.includes(tag));
+            if (intersection.length > 0) return false;
+          }
+
+          if (self.opts.defaultTags) {
+            if (self.opts.defaultTags.includes('All')) return true;
+            const intersection =
+              self.opts.defaultTags
+              .filter(tag => book.tags.includes(tag));
+            return (intersection.length > 0);
+          }
+
+          return true;
+        }
+      } else {
+        return self.opts.showTagless || false;
       }
-      return false;
     })
     .sort((a, b) => this.books[a].timestamp.localeCompare(
       this.books[b].timestamp))

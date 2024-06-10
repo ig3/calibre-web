@@ -148,3 +148,7 @@ Update dependencies.
  * Fix updateToc to handle href with fragment
  * Fix toc / navigation
  * Update dependencies
+
+### 1.0.10 - 20240611
+ * Revised tag filtering
+ * Add ~/.config/calibre-web.json config file path

@@ -152,3 +152,6 @@ Update dependencies.
 ### 1.0.10 - 20240611
  * Revised tag filtering
  * Add ~/.config/calibre-web.json config file path
+
+### 1.0.11 - WIP
+ * Fix tag list handling

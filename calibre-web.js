@@ -60,7 +60,7 @@ function run (opts = {}) {
     console.log(typeof req.cookies.tags);
     const tags = req.cookies && req.cookies.tags
       ? JSON.parse(req.cookies.tags)
-      : undefined;
+      : [];
     console.log('tags: ' + JSON.stringify(tags));
     this.books = this.getBooks();
     const bookList = Object.keys(this.books)
@@ -69,7 +69,7 @@ function run (opts = {}) {
     .filter(key => {
       const book = this.books[key];
       if (book.tags) {
-        if (tags) {
+        if (tags && tags.length > 0) {
           if (tags.includes('AllAll')) return true;
           if (tags.includes('All')) {
             if (self.opts.excludeTags) {

@@ -60,7 +60,7 @@ function run (opts = {}) {
     console.log(typeof req.cookies.tags);
     const tags = req.cookies && req.cookies.tags
       ? JSON.parse(req.cookies.tags)
-      : [];
+      : self.opts.defaultTags;
     console.log('tags: ' + JSON.stringify(tags));
     this.books = this.getBooks();
     const bookList = Object.keys(this.books)
@@ -127,7 +127,7 @@ function run (opts = {}) {
     console.log('Cookie header: ' + req.get('Cookie'));
     const selectedTags = req.cookies && req.cookies.tags
       ? JSON.parse(req.cookies.tags)
-      : ['General'];
+      : self.opts.defaultTags;
     console.log('typeof selectedTags: ' + typeof selectedTags);
     console.log('selectedTags: ', JSON.stringify(selectedTags, null, 2));
     const availableTags = this.getTags();

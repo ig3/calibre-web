@@ -155,3 +155,4 @@ Update dependencies.
 
 ### 1.0.11 - WIP
  * Fix tag list handling
+ * Update dependencies

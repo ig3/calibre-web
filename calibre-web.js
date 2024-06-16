@@ -127,7 +127,7 @@ function run (opts = {}) {
     console.log('Cookie header: ' + req.get('Cookie'));
     const selectedTags = req.cookies && req.cookies.tags
       ? JSON.parse(req.cookies.tags)
-      : [ 'General' ];
+      : ['General'];
     console.log('typeof selectedTags: ' + typeof selectedTags);
     console.log('selectedTags: ', JSON.stringify(selectedTags, null, 2));
     const availableTags = this.getTags();
@@ -277,7 +277,7 @@ function getBooks () {
 // getTags returns the union of tags across all databases, as an array
 function getTags () {
   const self = this;
-  const tags = {}
+  const tags = {};
   self.dbs.forEach(db => {
     const dbh = openDatabase(db.path);
     if (dbh) {

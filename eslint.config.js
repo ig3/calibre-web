@@ -6,7 +6,7 @@ module.exports = [
   ...eslintConfigEntrain,
   {
     ignores: [
-      'public/js/*js',
+      'public/js/',
     ],
   },
 ];

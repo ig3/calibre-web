@@ -5,7 +5,7 @@ const path = require('path');
 const api = {
   run,
   getBooks,
-  getTags
+  getTags,
 };
 
 module.exports = (options = {}) => {
@@ -14,7 +14,7 @@ module.exports = (options = {}) => {
     port: 9000,
     databases: [
       // paths to Calibre databases
-    ]
+    ],
   }, options);
 
   return instance;
@@ -28,7 +28,7 @@ function run (opts = {}) {
   self.dbs = [];
   self.opts.databases.forEach(dbPath => {
     self.dbs.push({
-      path: dbPath
+      path: dbPath,
       // dbh: openDatabase(dbPath)
     });
   });
@@ -49,7 +49,7 @@ function run (opts = {}) {
     express.static(
       path.join(__dirname, 'public'),
       {
-        maxAge: '1 week'
+        maxAge: '1 week',
       }
     )
   );
@@ -119,7 +119,7 @@ function run (opts = {}) {
       tags: tags,
       bookList: bookList,
       refresh: true,
-      shortcuts: true
+      shortcuts: true,
     });
   });
 
@@ -135,7 +135,7 @@ function run (opts = {}) {
       title: 'Calibre Web',
       selectedTags: selectedTags,
       availableTags: availableTags.sort(),
-      shortcuts: true
+      shortcuts: true,
     });
   });
 
@@ -148,12 +148,12 @@ function run (opts = {}) {
     if (!book) {
       return res.render('404', {
         title: 'Calibre Web',
-        uuid: uuid
+        uuid: uuid,
       });
     }
     const coverPath = path.join(book.path, 'cover.jpg');
     res.sendFile(coverPath, {
-      maxAge: '1 week'
+      maxAge: '1 week',
     });
   });
 
@@ -166,12 +166,12 @@ function run (opts = {}) {
     if (!book) {
       return res.render('404', {
         title: 'Calibre Web',
-        uuid: uuid
+        uuid: uuid,
       });
     }
     res.render('book', {
       title: book.title,
-      uuid: uuid
+      uuid: uuid,
     });
   });
 
@@ -184,7 +184,7 @@ function run (opts = {}) {
     if (!book) {
       return res.render('404', {
         title: 'Calibre Web',
-        uuid: uuid
+        uuid: uuid,
       });
     }
     console.log('book: ' + JSON.stringify(book, null, 2));
@@ -192,8 +192,8 @@ function run (opts = {}) {
     console.log('epubPath: ', epubPath);
     res.sendFile(epubPath, {
       headers: {
-        'content-type': 'application/epub+zip'
-      }
+        'content-type': 'application/epub+zip',
+      },
     });
   });
 
@@ -214,7 +214,7 @@ function openDatabase (dbPath) {
     const dbh = require('better-sqlite3')(
       path.join(dbPath, 'metadata.db'),
       {
-        fileMustExist: true
+        fileMustExist: true,
       }
     );
     return dbh;

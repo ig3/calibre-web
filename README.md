@@ -156,3 +156,6 @@ Update dependencies.
 ### 1.0.11 - WIP
  * Fix tag list handling
  * Update dependencies
+ * Remove dev dependencies tape and multi-tape
+ * Refactor the server implementation slightly
+ * Refactor inspired by https://medium.com/@grantcarthew/black-box-testing-a-node-js-web-api-d626f7d651be

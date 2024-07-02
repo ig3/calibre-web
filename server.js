@@ -2,37 +2,16 @@
 
 'use strict';
 
-const fs = require('fs');
-const path = require('path');
-const home = require('os').homedir();
-
-const config = getConfig();
+const config = require('./src/getConfig.js');
 console.log('config: ', JSON.stringify(config, null, 2));
 
-const server = require('./calibre-web')(config);
+const app = require('./src/app.js');
 
-server.run();
-
-/**
- * getConfig loads configuration from any of:
- *  /etc/calibre-web.json
- *  ~/.calibre-web.json
- */
-function getConfig () {
-  const config = {};
-
-  [
-    '/etc/calibre-web.json',
-    path.join(home, '.calibre-web.json'),
-    path.join(home, '.config', 'calibre-web.json'),
-  ].forEach(configPath => {
-    try {
-      const conf = JSON.parse(fs.readFileSync(configPath));
-      Object.assign(config, conf);
-    } catch (e) {
-      if (e.code !== 'ENOENT') console.log(configPath, e);
-    }
-  });
-
-  return config;
-}
+const server = app.listen(config.port, (err) => {
+  if (err) {
+    throw err;
+  }
+  const host = server.address().address;
+  const port = server.address().port;
+  console.log('Listening on https://%s:%s', host, port);
+});

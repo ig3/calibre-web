@@ -7,7 +7,7 @@
     "calibre-web": "server.js"
   },
   "scripts": {
-    "test": "eslint . && c8 multi-tape test/*.js"
+    "test": "eslint . && c8 node --test"
   },
   "repository": {
     "type": "git",
@@ -17,13 +17,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@ig3/eslint-config-entrain": "^4.0.1",
-    "c8": "^10.1.2",
-    "multi-tape": "^1.7.0",
-    "tape": "^5.8.1"
+    "@ig3/eslint-config-entrain": "^4.0.2",
+    "c8": "^10.1.2"
   },
   "dependencies": {
-    "better-sqlite3": "^11.0.0",
+    "better-sqlite3": "^11.1.2",
     "cookie-parser": "^1.4.6",
     "express": "^4.19.2",
     "express-handlebars": "^7.1.3",

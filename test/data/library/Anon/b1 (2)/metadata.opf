@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<package xmlns="http://www.idpf.org/2007/opf" unique-identifier="uuid_id" version="2.0">
+    <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+        <dc:identifier opf:scheme="calibre" id="calibre_id">2</dc:identifier>
+        <dc:identifier opf:scheme="uuid" id="uuid_id">433d8e89-5360-405e-9a53-fb3ec4b12726</dc:identifier>
+        <dc:title>b1</dc:title>
+        <dc:creator opf:file-as="Anon" opf:role="aut">Anon</dc:creator>
+        <dc:contributor opf:file-as="calibre" opf:role="bkp">calibre (6.13.0) [https://calibre-ebook.com]</dc:contributor>
+        <dc:date>2024-07-03T17:03:51.552000+00:00</dc:date>
+        <dc:description>短篇小说</dc:description>
+        <dc:language>en</dc:language>
+        <meta name="calibre:author_link_map" content="{&quot;Anon&quot;: &quot;&quot;}"/>
+        <meta name="calibre:timestamp" content="2024-07-03T17:06:44.693879+00:00"/>
+        <meta name="calibre:title_sort" content="b1"/>
+    </metadata>
+    <guide>
+        <reference type="cover" title="Cover" href="cover.jpg"/>
+    </guide>
+</package>

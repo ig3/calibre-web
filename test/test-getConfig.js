@@ -34,6 +34,7 @@ t.test('getConfig', async t => {
         p2: true,
         p3: true,
         x: 3,
+        port: 9000,
       },
       'configurations are merged'
     );
@@ -64,7 +65,13 @@ t.test('getConfig', async t => {
     });
     delete require.cache[require.resolve('../src/getConfig.js')];
     const config = require('../src/getConfig.js');
-    assert.deepEqual(config, {}, 'no config loaded if no config files');
+    assert.deepEqual(
+      config,
+      {
+        port: 9000,
+      },
+      'no config loaded if no config files'
+    );
     assert.deepEqual(logs, [], 'no console logs');
   });
 
@@ -93,7 +100,13 @@ t.test('getConfig', async t => {
     });
     delete require.cache[require.resolve('../src/getConfig.js')];
     const config = require('../src/getConfig.js');
-    assert.deepEqual(config, {}, 'no config loaded if no config files');
+    assert.deepEqual(
+      config,
+      {
+        port: 9000,
+      },
+      'no config loaded if no config files'
+    );
     assert.equal(logs.length, 3, '3 logs');
     logs.forEach(log => {
       assert.equal(log[1].code, 'EPERM', 'logged EPERM exception');

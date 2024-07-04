@@ -80,13 +80,19 @@ files.
 
 ### defaultTags
 
-An array of tags. Books with these tags will be included in the book list
-if no tags are specified tags cookie of the request.
+An array of tags that will be selected by default (i.e. if no other tags
+are selected).
 
 ### excludeTags
 
-An array of tags. Books with these tags will be excluded from the book
-list.
+An array of tags for which books having any of these tags will be excluded
+from the book list.
+
+### explicitOnly
+
+An array of tags that must be explicitly selected in order for books with
+those tags to be presented in the book list.
+
 
 ### showUntagged
 
@@ -156,6 +162,6 @@ Update dependencies.
 ### 1.0.11 - WIP
  * Fix tag list handling
  * Update dependencies
- * Remove dev dependencies tape and multi-tape
- * Refactor the server implementation slightly
- * Refactor inspired by https://medium.com/@grantcarthew/black-box-testing-a-node-js-web-api-d626f7d651be
+ * Remove dev dependencies on tape and multi-tape
+ * Refactor the server implementation
+ * Add tests

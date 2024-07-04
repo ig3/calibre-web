@@ -137,10 +137,20 @@ jszip.min.js, included in the public/js directory.
 
 ## Motivation
 
-I used [Calibre-web](https://github.com/janeczku/calibre-web) for a while
-but when I was setting up a new laptop I wanted something easier to
-install. I had been running a modified version of Calibre-web and wanted an
-all JavaScript implementation.
+I used [Calibre-web](https://github.com/janeczku/calibre-web) for a while,
+to view epub books in my browser where I use the
+[@ig3/zhongwen](https://addons.mozilla.org/en-US/firefox/addon/ig3-zhongwen/)
+add-on to look up Chinese characters, to help my study of Chinese. When I
+was setting up a new laptop, I wanted something easier to install,
+configure and customize. All the books I study are epub format, so I don't
+need support for other formats. Calibre makes it easy to convert other
+ebook formats to epub, except for PDF, which is difficult no matter what
+tools.
+
+I have built calibre-web on
+[a fork of epub.js](https://github.com/ig3/epub.js),
+modified for better navigation in Chinese texts, which don't have spaces
+separating words.
 
 ## Changes
 

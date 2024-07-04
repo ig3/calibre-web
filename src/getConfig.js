@@ -27,6 +27,8 @@ function getConfig () {
     }
   });
 
+  if (!config.port) config.port = 9000;
+
   return config;
 }
 

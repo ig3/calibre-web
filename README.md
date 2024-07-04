@@ -159,9 +159,12 @@ Update dependencies.
  * Revised tag filtering
  * Add ~/.config/calibre-web.json config file path
 
-### 1.0.11 - WIP
+### 1.0.11 - 20240705
  * Fix tag list handling
  * Update dependencies
  * Remove dev dependencies on tape and multi-tape
  * Refactor the server implementation
  * Add tests
+
+### 1.0.12 - WIP
+ * Restore default port 9000

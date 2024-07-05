@@ -6,7 +6,11 @@ const path = require('path');
 
 t.test('getBooks.js', async t => {
   const getBooks = require('../src/getBooks.js')(
-    [path.join(__dirname, 'data', 'library')]
+    [
+      path.join(__dirname, 'data', 'no_such_library'),
+      path.join(__dirname, 'data', 'bad_library'),
+      path.join(__dirname, 'data', 'library'),
+    ]
   );
   const books = getBooks();
   assert(books, 'returns books');

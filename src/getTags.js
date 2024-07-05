@@ -25,8 +25,6 @@ module.exports = (databases = []) => {
         } catch (err) {
           console.error('read ' + db.path + ': ', err);
         }
-      } else {
-        console.log(db.path + ': unavailable');
       }
     });
     return Object.keys(tags);

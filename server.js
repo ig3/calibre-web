@@ -5,7 +5,7 @@
 const config = require('./src/getConfig.js');
 console.log('config: ', JSON.stringify(config, null, 2));
 
-const app = require('./src/app.js');
+const app = require('./src/app.js')(config);
 
 const server = app.listen(config.port, (err) => {
   if (err) {

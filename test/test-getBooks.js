@@ -3,11 +3,11 @@ const assert = require('node:assert/strict');
 const t = require('node:test');
 
 const path = require('path');
-const config = require('../src/getConfig.js');
-config.databases = [path.join(__dirname, 'data', 'library')];
-const getBooks = require('../src/getBooks.js');
 
 t.test('getBooks.js', async t => {
+  const getBooks = require('../src/getBooks.js')(
+    [path.join(__dirname, 'data', 'library')]
+  );
   const books = getBooks();
   assert(books, 'returns books');
   assert.equal(Object.keys(books).length, 4, 'there should be 4 books');

@@ -18,7 +18,8 @@
   "license": "ISC",
   "devDependencies": {
     "@ig3/eslint-config-entrain": "^4.0.2",
-    "c8": "^10.1.2"
+    "c8": "^10.1.2",
+    "zora": "^6.0.0"
   },
   "dependencies": {
     "better-sqlite3": "^11.1.2",

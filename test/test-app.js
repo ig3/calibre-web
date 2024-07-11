@@ -1,22 +1,23 @@
 'use strict';
-const assert = require('node:assert/strict');
-const t = require('node:test');
+const t = require('zora');
 
 const path = require('path');
 
-t.test('app', async t => {
-  await t.test('get /', t => {
-    const port = setup(t, {
+t.test('app', t => {
+  t.test('get /', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/')
     .then(response => {
-      assert.equal(response.status, 200, 'Response status is 200');
-      assert(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
+      t.equal(response.status, 200, 'Response status is 200');
+      t.ok(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
       return response.text();
     })
     .then(data => {
-      assert(data.indexOf('html') !== -1, 'html document');
+      t.ok(data.indexOf('html') !== -1, 'html document');
       let coverPath;
       let nBooks = 0;
       data.split('\n')
@@ -29,29 +30,34 @@ t.test('app', async t => {
           coverPath = matches[1];
         }
       });
-      assert(coverPath, 'page includes a cover URL');
-      assert.equal(nBooks, 3, '3 books matched');
+      t.ok(coverPath, 'page includes a cover URL');
+      t.equal(nBooks, 3, '3 books matched');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
   // tags=%5B%22BL%22%5D
-  await t.test('get / with tags', t => {
-    const port = setup(t, {
+  t.test('get / with tags', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/', {
       headers: {
         Cookie: 'tags=%5B%22Physics%22%5D',
       },
     })
     .then(response => {
-      assert.equal(response.status, 200, 'Response status is 200');
-      assert(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
+      t.equal(response.status, 200, 'Response status is 200');
+      t.ok(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
       return response.text();
     })
     .then(data => {
-      assert(data.indexOf('html') !== -1, 'html document');
+      t.ok(data.indexOf('html') !== -1, 'html document');
       let nBooks = 0;
       data.split('\n')
       .forEach(line => {
@@ -59,27 +65,32 @@ t.test('app', async t => {
           nBooks++;
         }
       });
-      assert.equal(nBooks, 0, 'no books matched');
+      t.equal(nBooks, 0, 'no books matched');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
-  await t.test('get / with tag !All', t => {
-    const port = setup(t, {
+  t.test('get / with tag !All', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/', {
       headers: {
         Cookie: 'tags=%5B%22!All%22%5D',
       },
     })
     .then(response => {
-      assert.equal(response.status, 200, 'Response status is 200');
-      assert(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
+      t.equal(response.status, 200, 'Response status is 200');
+      t.ok(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
       return response.text();
     })
     .then(data => {
-      assert(data.indexOf('html') !== -1, 'html document');
+      t.ok(data.indexOf('html') !== -1, 'html document');
       let nBooks = 0;
       data.split('\n')
       .forEach(line => {
@@ -87,27 +98,32 @@ t.test('app', async t => {
           nBooks++;
         }
       });
-      assert.equal(nBooks, 4, '4 books matched');
+      t.equal(nBooks, 4, '4 books matched');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
-  await t.test('get / with tag Fiction', t => {
-    const port = setup(t, {
+  t.test('get / with tag Fiction', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/', {
       headers: {
         Cookie: 'tags=%5B%22Fiction%22%5D',
       },
     })
     .then(response => {
-      assert.equal(response.status, 200, 'Response status is 200');
-      assert(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
+      t.equal(response.status, 200, 'Response status is 200');
+      t.ok(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
       return response.text();
     })
     .then(data => {
-      assert(data.indexOf('html') !== -1, 'html document');
+      t.ok(data.indexOf('html') !== -1, 'html document');
       let nBooks = 0;
       data.split('\n')
       .forEach(line => {
@@ -115,27 +131,32 @@ t.test('app', async t => {
           nBooks++;
         }
       });
-      assert.equal(nBooks, 1, 'one book matched');
+      t.equal(nBooks, 1, 'one book matched');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
-  await t.test('get / with tag All', t => {
-    const port = setup(t, {
+  t.test('get / with tag All', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/', {
       headers: {
         Cookie: 'tags=%5B%22All%22%5D',
       },
     })
     .then(response => {
-      assert.equal(response.status, 200, 'Response status is 200');
-      assert(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
+      t.equal(response.status, 200, 'Response status is 200');
+      t.ok(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
       return response.text();
     })
     .then(data => {
-      assert(data.indexOf('html') !== -1, 'html document');
+      t.ok(data.indexOf('html') !== -1, 'html document');
       let nBooks = 0;
       data.split('\n')
       .forEach(line => {
@@ -143,26 +164,31 @@ t.test('app', async t => {
           nBooks++;
         }
       });
-      assert.equal(nBooks, 1, 'one book matched');
+      t.equal(nBooks, 1, 'one book matched');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
-  await t.test('get / with tag All, no excluded tags', t => {
-    const port = setup(t, {
+  t.test('get / with tag All, no excluded tags', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/', {
       headers: {
         Cookie: 'tags=%5B%22All%22%5D',
       },
     })
     .then(response => {
-      assert.equal(response.status, 200, 'Response status is 200');
-      assert(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
+      t.equal(response.status, 200, 'Response status is 200');
+      t.ok(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
       return response.text();
     })
     .then(data => {
-      assert(data.indexOf('html') !== -1, 'html document');
+      t.ok(data.indexOf('html') !== -1, 'html document');
       let nBooks = 0;
       data.split('\n')
       .forEach(line => {
@@ -170,37 +196,39 @@ t.test('app', async t => {
           nBooks++;
         }
       });
-      assert.equal(nBooks, 2, '2 books matched');
+      t.equal(nBooks, 2, '2 books matched');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
-  await t.test('get / with bad tags', t => {
-    const port = setup(t, {
+  t.test('get / with bad tags', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     const consoleError = console.error;
     let errorCount = 0;
     console.error = (...args) => {
       errorCount++;
       consoleError(...args);
     };
-    t.after(() => {
-      console.error = consoleError;
-    });
     return fetch('http://localhost:' + port + '/', {
       headers: {
         Cookie: 'tags=%5B%22All%22%5Dxx',
       },
     })
     .then(response => {
-      assert.equal(response.status, 200, 'Response status is 200');
-      assert(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
-      assert.equal(errorCount, 2, 'errors logged');
+      t.equal(response.status, 200, 'Response status is 200');
+      t.ok(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
+      t.equal(errorCount, 2, 'errors logged');
       return response.text();
     })
     .then(data => {
-      assert(data.indexOf('html') !== -1, 'html document');
+      t.ok(data.indexOf('html') !== -1, 'html document');
       let nBooks = 0;
       data.split('\n')
       .forEach(line => {
@@ -208,180 +236,224 @@ t.test('app', async t => {
           nBooks++;
         }
       });
-      assert.equal(nBooks, 1, '1 book matched');
+      t.equal(nBooks, 1, '1 book matched');
+    })
+    .finally(() => {
+      console.error = consoleError;
+      listener.close();
     });
   });
-  await t.test('get /tags', t => {
-    const port = setup(t, {
+  t.test('get /tags', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/tags')
     .then(response => {
-      assert.equal(response.status, 200, 'Response status is 200');
-      assert(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
+      t.equal(response.status, 200, 'Response status is 200');
+      t.ok(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
       return response.text();
     })
     .then(data => {
-      assert(data.indexOf('html') !== -1, 'html document');
-      assert(data.indexOf('General') !== -1, 'test tag');
+      t.ok(data.indexOf('html') !== -1, 'html document');
+      t.ok(data.indexOf('General') !== -1, 'test tag');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
-  await t.test('get /tags with cookies', t => {
-    const port = setup(t, {
+  t.test('get /tags with cookies', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/tags', {
       headers: {
         Cookie: 'tags=%5B%22General%22%5D',
       },
     })
     .then(response => {
-      assert.equal(response.status, 200, 'Response status is 200');
-      assert(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
+      t.equal(response.status, 200, 'Response status is 200');
+      t.ok(response.headers.get('content-type').indexOf('text/html') !== -1, 'content type');
       return response.text();
     })
     .then(data => {
-      assert(data.indexOf('html') !== -1, 'html document');
-      assert(data.indexOf('Selected: General') !== -1, 'General tag is selected');
+      t.ok(data.indexOf('html') !== -1, 'html document');
+      t.ok(data.indexOf('Selected: General') !== -1, 'General tag is selected');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
-  await t.test('get /book', t => {
-    const port = setup(t, {
+  t.test('get /book', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/book/d3e331de-75a8-4d27-98e3-3024c1c3b710')
     .then(response => {
-      assert.equal(response.status, 200, 'Response status is 200');
-      assert.equal(response.headers.get('content-type'), 'text/html; charset=utf-8', 'content type');
+      t.equal(response.status, 200, 'Response status is 200');
+      t.equal(response.headers.get('content-type'), 'text/html; charset=utf-8', 'content type');
       return response.text();
     })
     .then(bodyText => {
-      assert(bodyText, 'got a body');
+      t.ok(bodyText, 'got a body');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
-  await t.test('get invalid /book', t => {
-    const port = setup(t, {
+  t.test('get invalid /book', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/book/no-such-book')
     .then(response => {
-      assert.equal(response.status, 404, 'Response status is 404');
+      t.equal(response.status, 404, 'Response status is 404');
       return response.text();
     })
     .then(bodyText => {
-      assert(bodyText, 'got a body');
+      t.ok(bodyText, 'got a body');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
-  await t.test('get /book epub', t => {
-    const port = setup(t, {
+  t.test('get /book epub', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/book/d3e331de-75a8-4d27-98e3-3024c1c3b710' + '/book.epub')
     .then(response => {
-      assert.equal(response.status, 200, 'Response status is 200');
-      assert.equal(response.headers.get('content-type'), 'application/epub+zip', 'content type');
+      t.equal(response.status, 200, 'Response status is 200');
+      t.equal(response.headers.get('content-type'), 'application/epub+zip', 'content type');
       return response.text();
     })
     .then(bodyText => {
-      assert(bodyText, 'got a body');
+      t.ok(bodyText, 'got a body');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
-  await t.test('get invalid /book epub', t => {
-    const port = setup(t, {
+  t.test('get invalid /book epub', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/book/no-such-uuid/book.epub')
     .then(response => {
-      assert.equal(response.status, 404, 'Response status is 404');
+      t.equal(response.status, 404, 'Response status is 404');
       return response.text();
     })
     .then(bodyText => {
-      assert(bodyText, 'got a body');
+      t.ok(bodyText, 'got a body');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
-  await t.test('get /cover', t => {
-    const port = setup(t, {
+  t.test('get /cover', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/cover/d3e331de-75a8-4d27-98e3-3024c1c3b710/cover.jpg')
     .then(response => {
-      assert.equal(response.status, 200, 'Response status is 200');
-      assert.equal(response.headers.get('content-type'), 'image/jpeg', 'content type');
-      assert.equal(response.headers.get('content-length'), '49123', 'content length');
+      t.equal(response.status, 200, 'Response status is 200');
+      t.equal(response.headers.get('content-type'), 'image/jpeg', 'content type');
+      t.equal(response.headers.get('content-length'), '49123', 'content length');
       return response.blob();
     })
     .then(blob => {
-      assert(blob, 'got a blob');
+      t.ok(blob, 'got a blob');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
-  await t.test('get invalid /cover', t => {
-    const port = setup(t, {
+  t.test('get invalid /cover', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/cover/no-such-book/cover.jpg')
     .then(response => {
-      assert.equal(response.status, 404, 'Response status is 404');
+      t.equal(response.status, 404, 'Response status is 404');
       return response.text();
     })
     .then(bodyText => {
-      assert(bodyText, 'got a body');
+      t.ok(bodyText, 'got a body');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
-  await t.test('get /css/main.css', t => {
-    const port = setup(t, {
+  t.test('get /css/main.css', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/css/main.css')
     .then(response => {
-      assert.equal(response.status, 200, 'Response status is 200');
-      assert.equal(response.headers.get('content-type'), 'text/css; charset=UTF-8', 'content type');
+      t.equal(response.status, 200, 'Response status is 200');
+      t.equal(response.headers.get('content-type'), 'text/css; charset=UTF-8', 'content type');
       return response.text();
     })
     .then(data => {
-      assert(data, 'got data');
+      t.ok(data, 'got data');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
-  await t.test('get /bad/path', t => {
-    const port = setup(t, {
+  t.test('get /bad/path', t => {
+    const app = require('../src/app.js')({
       databases: [path.join(__dirname, 'data', 'library')],
       excludeTags: ['A', 'X'],
       explicitOnly: ['B', 'Y'],
     });
+    const listener = app.listen();
+    const port = listener.address().port;
     return fetch('http://localhost:' + port + '/bad/path')
     .then(response => {
-      assert.equal(response.status, 404, 'Response status is 404');
+      t.equal(response.status, 404, 'Response status is 404');
       return response.text();
     })
     .then(data => {
-      assert(data, 'got data');
+      t.ok(data, 'got data');
+    })
+    .finally(() => {
+      listener.close();
     });
   });
 });
-
-function setup (t, config) {
-  const app = require('../src/app.js')(config);
-  const listener = app.listen();
-  const port = listener.address().port;
-  t.after(() => {
-    listener.close();
-  });
-  return port;
-}

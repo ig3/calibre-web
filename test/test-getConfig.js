@@ -2,8 +2,7 @@
 const fs = require('fs');
 const home = require('os').homedir();
 
-const assert = require('node:assert/strict');
-const t = require('node:test');
+const t = require('zora');
 
 t.test('getConfig', async t => {
   await t.test('loads configs', t => {
@@ -20,14 +19,13 @@ t.test('getConfig', async t => {
         return '{ "p' + filesRead.length + '": true, "x": ' + filesRead.length + ' }';
       }
     };
-    t.after(() => { fs.readFileSync = orig; });
 
     const config = require('../src/getConfig.js');
-    assert.equal(filesRead[0], '/etc/calibre-web.json', 'first path');
-    assert.equal(filesRead[1], home + '/.calibre-web.json', 'second path');
-    assert.equal(filesRead[2], home + '/.config/calibre-web.json', 'third path');
-    assert.equal(filesRead.length, 3, '3 config files');
-    assert.deepEqual(
+    t.equal(filesRead[0], '/etc/calibre-web.json', 'first path');
+    t.equal(filesRead[1], home + '/.calibre-web.json', 'second path');
+    t.equal(filesRead[2], home + '/.config/calibre-web.json', 'third path');
+    t.equal(filesRead.length, 3, '3 config files');
+    t.deepEqual(
       config,
       {
         p1: true,
@@ -38,6 +36,7 @@ t.test('getConfig', async t => {
       },
       'configurations are merged'
     );
+    fs.readFileSync = orig;
   });
 
   await t.test('ignores ENOENT', t => {
@@ -60,19 +59,17 @@ t.test('getConfig', async t => {
       logs.push(args);
       console.log = consoleLog;
     };
-    t.after(() => {
-      fs.readFileSync = orig;
-    });
     delete require.cache[require.resolve('../src/getConfig.js')];
     const config = require('../src/getConfig.js');
-    assert.deepEqual(
+    t.deepEqual(
       config,
       {
         port: 9000,
       },
       'no config loaded if no config files'
     );
-    assert.deepEqual(logs, [], 'no console logs');
+    t.deepEqual(logs, [], 'no console logs');
+    fs.readFileSync = orig;
   });
 
   await t.test('logs non-ENOENT exceptions', t => {
@@ -94,22 +91,21 @@ t.test('getConfig', async t => {
     console.log = (...args) => {
       logs.push(args);
     };
-    t.after(() => {
-      fs.readFileSync = orig;
-      console.log = consoleLog;
-    });
     delete require.cache[require.resolve('../src/getConfig.js')];
     const config = require('../src/getConfig.js');
-    assert.deepEqual(
+    t.deepEqual(
       config,
       {
         port: 9000,
       },
       'no config loaded if no config files'
     );
-    assert.equal(logs.length, 3, '3 logs');
+    t.equal(logs.length, 3, '3 logs');
     logs.forEach(log => {
-      assert.equal(log[1].code, 'EPERM', 'logged EPERM exception');
+      t.equal(log[1].code, 'EPERM', 'logged EPERM exception');
     });
+
+    fs.readFileSync = orig;
+    console.log = consoleLog;
   });
 });

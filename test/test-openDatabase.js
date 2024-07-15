@@ -1,5 +1,5 @@
 'use strict';
-const t = require('zora');
+const t = require('@ig3/test');
 
 const openDatabase = require('../src/openDatabase.js');
 const path = require('path');
@@ -12,6 +12,7 @@ t.test('openDatabase.js', t => {
     t.equal(dbh.name, path.join(__dirname, 'data', 'metadata.db'), 'database name');
     t.ok(dbh.prepare, 'prepare method exists');
     t.ok(typeof dbh.prepare, 'function', 'prepare method is a function');
+    t.end();
   });
 
   t.test('error on non-existing database', t => {
@@ -25,5 +26,7 @@ t.test('openDatabase.js', t => {
     t.equal(dbh, undefined, 'does not return a database handle');
     t.ok(logs, 'logs produced');
     console.error = consoleError;
+    t.end();
   });
+  t.end();
 });

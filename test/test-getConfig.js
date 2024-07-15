@@ -2,7 +2,7 @@
 const fs = require('fs');
 const home = require('os').homedir();
 
-const t = require('zora');
+const t = require('@ig3/test');
 
 t.test('getConfig', async t => {
   await t.test('loads configs', t => {
@@ -37,6 +37,7 @@ t.test('getConfig', async t => {
       'configurations are merged'
     );
     fs.readFileSync = orig;
+    t.end();
   });
 
   await t.test('ignores ENOENT', t => {
@@ -70,6 +71,7 @@ t.test('getConfig', async t => {
     );
     t.deepEqual(logs, [], 'no console logs');
     fs.readFileSync = orig;
+    t.end();
   });
 
   await t.test('logs non-ENOENT exceptions', t => {
@@ -107,5 +109,7 @@ t.test('getConfig', async t => {
 
     fs.readFileSync = orig;
     console.log = consoleLog;
+    t.end();
   });
+  t.end();
 });

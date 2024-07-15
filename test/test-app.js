@@ -1,5 +1,5 @@
 'use strict';
-const t = require('zora');
+const t = require('@ig3/test');
 
 const path = require('path');
 
@@ -35,6 +35,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   // tags=%5B%22BL%22%5D
@@ -69,6 +70,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   t.test('get / with tag !All', t => {
@@ -102,6 +104,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   t.test('get / with tag Fiction', t => {
@@ -135,6 +138,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   t.test('get / with tag All', t => {
@@ -168,6 +172,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   t.test('get / with tag All, no excluded tags', t => {
@@ -200,6 +205,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   t.test('get / with bad tags', t => {
@@ -241,6 +247,7 @@ t.test('app', t => {
     .finally(() => {
       console.error = consoleError;
       listener.close();
+      t.end();
     });
   });
   t.test('get /tags', t => {
@@ -263,6 +270,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   t.test('get /tags with cookies', t => {
@@ -289,6 +297,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   t.test('get /book', t => {
@@ -310,6 +319,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   t.test('get invalid /book', t => {
@@ -330,6 +340,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   t.test('get /book epub', t => {
@@ -351,6 +362,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   t.test('get invalid /book epub', t => {
@@ -371,6 +383,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   t.test('get /cover', t => {
@@ -393,6 +406,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   t.test('get invalid /cover', t => {
@@ -413,6 +427,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   t.test('get /css/main.css', t => {
@@ -434,6 +449,7 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
   t.test('get /bad/path', t => {
@@ -454,6 +470,8 @@ t.test('app', t => {
     })
     .finally(() => {
       listener.close();
+      t.end();
     });
   });
+  t.end();
 });

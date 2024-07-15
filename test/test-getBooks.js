@@ -1,5 +1,5 @@
 'use strict';
-const t = require('zora');
+const t = require('@ig3/test');
 
 const path = require('path');
 
@@ -16,4 +16,5 @@ t.test('getBooks.js', t => {
   t.equal(Object.keys(books).length, 4, 'there should be 4 books');
   const book = books[Object.keys(books)[0]];
   t.equal(book.id, 2, 'book id is 2');
+  t.end();
 });

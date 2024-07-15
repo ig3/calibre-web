@@ -179,4 +179,4 @@ Update dependencies.
 ### 1.0.12 - WIP
  * Restore default port 9000
  * Refactor again
- * Rewrite tests based on zora
+ * Rewrite tests based on @ig3/test

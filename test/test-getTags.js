@@ -1,5 +1,5 @@
 'use strict';
-const t = require('zora');
+const t = require('@ig3/test');
 
 const path = require('path');
 
@@ -12,4 +12,5 @@ t.test('getTags.js', t => {
   const tags = getTags();
   t.ok(tags, 'have tags');
   t.equal(tags[0], 'General', 'first tag is General');
+  t.end();
 });

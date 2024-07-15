@@ -180,3 +180,4 @@ Update dependencies.
  * Restore default port 9000
  * Refactor again
  * Rewrite tests based on @ig3/test
+ * Replace `node --test` with multi-tape test runner

@@ -59,18 +59,6 @@
     let keyListener = function(e) {
       // Left key
       if ((e.keyCode || e.which) == 37) {
-        book.package.metadata.direction === 'rtl' ?
-          rendition.next() : rendition.prev();
-      }
-
-      // Right key
-      if ((e.keyCode || e.which) == 39) {
-        book.package.metadata.direction === 'rtl' ?
-          rendition.prev() : rendition.next();
-      }
-
-      // Up key - previous chapter
-      if ((e.keyCode || e.which) == 38) {
         const $select = document.getElementById('toc');
         const index = $select.selectedIndex;
         if (index > 0) {
@@ -79,14 +67,26 @@
         }
       }
 
-      // Down key - next chapter
-      if ((e.keyCode || e.which) == 40) {
+      // Right key
+      if ((e.keyCode || e.which) == 39) {
         const $select = document.getElementById('toc');
         const index = $select.selectedIndex;
         if (index < $select.options.length - 1) {
           const url = $select.options[index + 1].getAttribute('ref');
           rendition.display(url);
         }
+      }
+
+      // Up key - previous chapter
+      if ((e.keyCode || e.which) == 38) {
+        book.package.metadata.direction === 'rtl' ?
+          rendition.next() : rendition.prev();
+      }
+
+      // Down key - next chapter
+      if ((e.keyCode || e.which) == 40) {
+        book.package.metadata.direction === 'rtl' ?
+          rendition.prev() : rendition.next();
       }
     };
 

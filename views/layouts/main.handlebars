@@ -12,18 +12,5 @@
   <div id="content">
     {{{body}}}
   </div>
-  {{#if shortcuts}}
-  <script>
-    document.addEventListener("keypress", keyCapt, false);
-    function keyCapt (e) {
-      console.log(e.keyCode);
-      if (e.keyCode === 104) { // h
-        window.location = '/';
-      } else if (e.keyCode === 116) { // t
-        window.location = '/tags';
-      }
-    }
-  </script>
-  {{/if}}
 </body>
 </html>

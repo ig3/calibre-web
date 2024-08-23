@@ -15,17 +15,21 @@ Available:</br>
 
 <script>
   (function () {
+    function setCookie (value) {
+      const expires = new Date();
+      expires.setHours(expires.getHours() + 1);
+      document.cookie =
+        value +
+        ';expires=' + expires.toUTCString() +
+        ';SameSite=Strict';
+    }
     function setCookieAndGoHome () {
       const selectedTags = JSON.stringify(
         Array.from(
           document.querySelectorAll("input[type='checkbox']:checked")
         ).map(el => el.name)
       );
-      const expires = new Date();
-      expires.setHours(expires.getHours() + 1);
-      const cookie = "tags=" + encodeURI(selectedTags) + 
-      ';expires=' + expires.toUTCString() + ';SameSite=Strict';
-      document.cookie = cookie;
+      setCookie('tags=' + encodeURI(selectedTags));
       window.location = '/';
     }
     document.addEventListener('click', evt => {
@@ -33,10 +37,19 @@ Available:</br>
         setCookieAndGoHome();
       }
     });
-    document.addEventListener('keypress', evt => {
-      if (evt.keyCode === 13) { // Enter or Return
-        setCookieAndGoHome();
+    document.addEventListener(
+      'keydown',
+      evt => {
+        if (evt.key === 'Enter') {
+          setCookieAndGoHome();
+        } else if (evt.key === 'a') {
+          setCookie('tags=' + encodeURI('["All"]'));
+          window.location = '/';
+        } else if (evt.key === 'A') {
+          setCookie('tags=' + encodeURI('["!All"]'));
+          window.location = '/';
+        }
       }
-    });
+    );
   })();
 </script>

@@ -10,3 +10,18 @@
 {{/bookList}}
 </div>
 
+{{#if shortcuts}}
+<script>
+  document.addEventListener(
+    'keydown',
+    evt => {
+      if (evt.key === 'h') {
+        window.location === '/';
+      } else if (evt.key === 't') {
+        window.location = '/tags';
+      }
+    }
+  );
+</script>
+{{/if}}
+

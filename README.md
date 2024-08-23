@@ -181,3 +181,4 @@ Update dependencies.
  * Refactor again
  * Rewrite tests based on @ig3/test
  * Replace `node --test` with multi-tape test runner
+ * listen for keydown instead of keypress events

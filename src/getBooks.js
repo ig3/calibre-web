@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
 
 module.exports = (databases = []) => {
   const dbs = [];
@@ -10,14 +11,29 @@ module.exports = (databases = []) => {
       // dbh: openDatabase(dbPath)
     });
   });
-  const books = {};
+  let books = {};
   let lastLoadTime = 0;
   const openDatabase = require('./openDatabase.js');
 
+  function getLastChangeTime () {
+    let lastChangeTime = 0;
+    dbs.forEach(db => {
+      try {
+        const mtime = fs.statSync(path.join(db.path, 'metadata.db')).mtime;
+        if (mtime > lastChangeTime) lastChangeTime = mtime;
+      } catch (e) {
+        // Ignore errors
+      }
+    });
+    return lastChangeTime;
+  }
+
   function getBooks () {
     const now = new Date();
-    if (now - lastLoadTime > 60000) {
+    const lastChangeTime = getLastChangeTime();
+    if (lastChangeTime > lastLoadTime) {
       lastLoadTime = now;
+      books = {};
       dbs.forEach(db => {
         const dbh = openDatabase(db.path);
         if (dbh) {
